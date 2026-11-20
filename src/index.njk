@@ -157,7 +157,7 @@ permalink: /index.html
 
   <section id="contact" class="wrap" style="padding-bottom:96px">
     <div class="card contact-card">
-      <p class="mono" style="margin:0;color:#8B8A86">{{ s.availability }}</p>
+      <p class="mono" style="margin:0;display:flex;align-items:center;gap:10px;color:#8B8A86"><span class="dot" aria-hidden="true" style="background:#3BD671"></span>{{ s.availability }}</p>
       <h2 class="up">{{ s.contact.question }} <span>{{ s.contact.highlight }}</span></h2>
       <div class="contact-actions">
         {%- for b in s.contact.buttons %}

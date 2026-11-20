@@ -211,7 +211,7 @@
         "title": "Merch",
         "price": "€250",
         "text": "Custom artwork adapted for any apparel, physical product, or promotional item your brand needs.",
-        "featured": true
+        "featured": false
       }
     ],
     "combined": "Need more than one?",
