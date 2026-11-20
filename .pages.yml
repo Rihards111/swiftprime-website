@@ -1,0 +1,156 @@
+media:
+  input: src/images
+  output: /images
+
+content:
+  - name: site
+    label: Website
+    type: file
+    path: src/_data/site.json
+    fields:
+      - name: availability
+        label: Availability line (top and contact)
+        type: string
+      - name: hero
+        label: Top section
+        type: object
+        fields:
+          - { name: before, label: "Headline – before the orange word", type: string }
+          - { name: highlight, label: "Headline – orange word (with the two lines)", type: string }
+          - { name: after, label: "Headline – after the orange word", type: string }
+          - { name: intro, label: Intro text, type: text }
+          - { name: button, label: Orange button, type: string }
+          - { name: workLink, label: Link to work, type: string }
+      - name: stats
+        label: Three numbers
+        type: object
+        list: true
+        fields:
+          - { name: value, label: Number, type: string }
+          - { name: label, label: Text under it, type: string }
+      - name: work
+        label: Selected work – heading
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - { name: link, label: Small link, type: string }
+      - name: projects
+        label: Projects
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - { name: title, label: Project name, type: string }
+          - { name: tag, label: Small tag (e.g. Logo), type: string }
+          - { name: type, label: Type, type: string }
+          - { name: client, label: Client, type: string }
+          - { name: year, label: Year, type: string }
+          - { name: summary, label: One-line summary, type: text }
+          - { name: problem, label: Problem, type: text }
+          - { name: process, label: Process, type: text }
+          - { name: result, label: Result, type: text }
+          - { name: cover, label: Cover image (on the card), type: image }
+          - { name: coverAlt, label: Cover image description, type: string }
+          - name: images
+            label: Case images
+            type: object
+            list: true
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Image description, type: string }
+      - name: services
+        label: What I do
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - { name: intro, label: Intro, type: text }
+          - name: items
+            label: Services
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+      - name: process
+        label: How I work
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - name: steps
+            label: Steps
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+      - name: pricing
+        label: Prices
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - { name: note, label: Small note, type: string }
+          - name: items
+            label: Price cards
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Service, type: string }
+              - { name: price, label: "Price (e.g. €450)", type: string }
+              - { name: text, label: What's included, type: text }
+              - { name: featured, label: Orange border, type: boolean }
+          - { name: combined, label: Line under prices, type: string }
+          - { name: combinedLink, label: Link text, type: string }
+      - name: faq
+        label: Questions
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - name: items
+            label: Questions
+            type: object
+            list: true
+            fields:
+              - { name: question, label: Question, type: string }
+              - { name: answer, label: Answer, type: text }
+      - name: contact
+        label: Contact
+        type: object
+        fields:
+          - { name: question, label: Big question, type: string }
+          - { name: highlight, label: Orange part, type: string }
+          - { name: email, label: Email, type: string }
+          - name: buttons
+            label: Brief buttons
+            type: object
+            list: true
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: url, label: Link, type: string }
+              - { name: primary, label: Orange button, type: boolean }
+      - name: footer
+        label: Footer
+        type: object
+        fields:
+          - { name: text, label: Footer text, type: string }
+          - { name: instagram, label: Instagram handle, type: string }
+          - { name: instagramUrl, label: Instagram link, type: string }
+      - name: meta
+        label: Google & sharing
+        type: object
+        fields:
+          - { name: title, label: Page title (Google), type: string }
+          - { name: description, label: Description (Google), type: text }
+          - { name: shareImage, label: Image when shared, type: image }
+      - name: brandName
+        label: Brand name
+        type: string
+      - name: brandTagline
+        label: Small text next to logo
+        type: string
+      - name: analytics
+        label: Analytics (don't change)
+        type: object
+        fields:
+          - { name: cloudflareToken, label: Cloudflare token, type: string }

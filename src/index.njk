@@ -1,0 +1,187 @@
+---
+permalink: /index.html
+---
+{%- set s = site -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ s.meta.title }}</title>
+<meta name="description" content="{{ s.meta.description }}">
+<meta property="og:title" content="{{ s.meta.title }}">
+<meta property="og:description" content="{{ s.meta.description }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://swiftprimedesign.com/">
+<meta property="og:image" content="https://swiftprimedesign.com{{ s.meta.shareImage }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="canonical" href="https://swiftprimedesign.com/">
+<link rel="icon" type="image/png" href="/images/logo-dark.png">
+<link rel="preload" href="/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Main">
+      <a href="#top" class="brand">
+        <img src="/images/logo-white.png" alt="" width="26" height="26">
+        <span class="brand-name">{{ s.brandName }}</span>
+        <span class="mono brand-tag">{{ s.brandTagline }}</span>
+      </a>
+      <div class="nav-links">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#pricing">Pricing</a>
+        <a class="btn nav-cta" href="#contact"><span class="dot" aria-hidden="true" style="background:#FF5A1F"></span>Start a brief</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+  <section id="top" class="wrap hero">
+    <p class="mono" style="margin:0;display:flex;align-items:center;gap:10px;color:#8B8A86"><span class="dot" aria-hidden="true" style="background:#3BD671"></span>{{ s.availability }}</p>
+    <h1>
+      {%- set before = s.hero.before.split(' ') -%}
+      {%- for w in before %}<span class="w" style="--i:{{ loop.index0 }}">{{ w }}</span> {% endfor -%}
+      <span class="w hl" style="--i:{{ before.length }}">{{ s.hero.highlight }}<svg aria-hidden="true" viewBox="0 0 160 34" preserveAspectRatio="none"><path d="M3 20 Q 80 12 157 3" fill="none" stroke="#FF5A1F" stroke-width="5" stroke-linecap="round"/><path d="M14 31 Q 84 23 150 15" fill="none" stroke="#FF5A1F" stroke-width="3" stroke-linecap="round"/></svg></span>
+      {%- for w in s.hero.after.split(' ') %} <span class="w" style="--i:{{ before.length + 1 + loop.index0 }}">{{ w }}</span>{% endfor -%}
+    </h1>
+    <div class="hero-row">
+      <div class="hero-copy">
+        <p>{{ s.hero.intro }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <a class="btn btn-primary" href="#contact">{{ s.hero.button }}</a>
+          <a class="mono" href="#work" style="text-decoration:none;color:#A9A7A1;padding:16px 8px">{{ s.hero.workLink }}</a>
+        </div>
+      </div>
+      <dl class="stats">
+        {%- for st in s.stats %}
+        <div><dt>{{ st.value }}</dt><dd class="mono">{{ st.label }}</dd></div>
+        {%- endfor %}
+      </dl>
+    </div>
+  </section>
+
+  <section class="strip-wrap" aria-label="Project preview">
+    <div class="strip">
+      {%- for round in [1, 2] %}{% for p in s.projects %}
+      <a href="#work" class="zoom"{% if round == 2 %} aria-hidden="true" tabindex="-1"{% endif %}>
+        <div class="img"><img src="{{ p.cover }}" alt="{% if round == 1 %}{{ p.coverAlt }}{% endif %}" loading="lazy" width="420" height="280"></div>
+        <div class="mono" style="display:flex;justify-content:space-between;color:#A9A7A1"><span>{{ p.title }}</span><span style="color:#6E6D69">{{ p.tag }}</span></div>
+      </a>
+      {%- endfor %}{% endfor %}
+    </div>
+  </section>
+
+  <section id="work" class="wrap section work">
+    <div class="rule work-head">
+      <h2 class="h-section reveal">{{ s.work.title | words | safe }}</h2>
+      <a href="#contact" class="mono" style="text-decoration:none;color:#A9A7A1">{{ s.work.link }}</a>
+    </div>
+    {%- for p in s.projects %}
+    <article class="card zoom project" style="top:{{ 96 + loop.index0 * 20 }}px">
+      <div class="slide project-text">
+        <p class="mono" style="margin:0;color:#8B8A86"><span class="num">{{ "0" if loop.index < 10 }}{{ loop.index }}</span>&nbsp; {{ p.tag }}</p>
+        <h3>{{ p.title }}</h3>
+        <p class="project-summary">{{ p.summary }}</p>
+        <dl class="mono facts">
+          <dt>Type</dt><dd>{{ p.type }}</dd>
+          <dt>Client</dt><dd>{{ p.client }}</dd>
+          <dt>Year</dt><dd>{{ p.year }}</dd>
+        </dl>
+        <button type="button" class="btn case-btn" aria-expanded="false" aria-controls="case-{{ loop.index }}">Open case →</button>
+      </div>
+      <div class="zoomin cover"><img src="{{ p.cover }}" alt="{{ p.coverAlt }}" loading="lazy" width="800" height="600"></div>
+      <div class="case" id="case-{{ loop.index }}" hidden>
+        <div class="case-cols">
+          <div><span class="mono">Problem</span><p>{{ p.problem }}</p></div>
+          <div><span class="mono">Process</span><p>{{ p.process }}</p></div>
+          <div><span class="mono">Result</span><p>{{ p.result }}</p></div>
+        </div>
+        <div class="case-imgs">
+        {%- for img in p.images %}
+          <img src="{{ img.src }}" alt="{{ img.alt }}" loading="lazy" width="1800" height="1350">
+        {%- endfor %}
+        </div>
+      </div>
+    </article>
+    {%- endfor %}
+  </section>
+
+  <section id="services" class="wrap section services">
+    <div class="rule services-intro">
+      <h2 class="h-section reveal">{{ s.services.title | words | safe }}</h2>
+      <p>{{ s.services.intro }}</p>
+    </div>
+    <ol class="list stagger">
+      {%- for it in s.services.items %}
+      <li><span class="mono num">{{ "0" if loop.index < 10 }}{{ loop.index }}</span><div><h3>{{ it.title }}</h3><p>{{ it.text }}</p></div></li>
+      {%- endfor %}
+    </ol>
+  </section>
+
+  <section id="process" class="wrap section" style="display:flex;flex-direction:column;gap:40px">
+    <div class="rule"><h2 class="h-section reveal">{{ s.process.title | words | safe }}</h2></div>
+    <ol class="steps stagger">
+      {%- for st in s.process.steps %}
+      <li class="card"><span class="mono num">{{ "0" if loop.index < 10 }}{{ loop.index }}</span><h3>{{ st.title }}</h3><p>{{ st.text }}</p></li>
+      {%- endfor %}
+    </ol>
+  </section>
+
+  <section id="pricing" class="wrap section" style="display:flex;flex-direction:column;gap:40px">
+    <div class="rule work-head">
+      <h2 class="h-section reveal">{{ s.pricing.title | words | safe }}</h2>
+      <p class="mono" style="margin:0;color:#8B8A86">{{ s.pricing.note }}</p>
+    </div>
+    <div class="prices stagger">
+      {%- for pr in s.pricing.items %}
+      <div class="card price{% if pr.featured %} featured{% endif %}"><h3>{{ pr.title }}</h3><p class="amount"><span class="from">from </span>{{ pr.price }}</p><p>{{ pr.text }}</p></div>
+      {%- endfor %}
+    </div>
+    <p class="combined">{{ s.pricing.combined }} <a href="#contact">{{ s.pricing.combinedLink }}</a></p>
+  </section>
+
+  <section id="faq" class="wrap section faq">
+    <div class="rule"><h2 class="h-section reveal">{{ s.faq.title | words | safe }}</h2></div>
+    <div style="border-top:1px solid #232327">
+      {%- for q in s.faq.items %}
+      <details class="q"><summary>{{ q.question }} <span class="plus" aria-hidden="true">+</span></summary><p>{{ q.answer }}</p></details>
+      {%- endfor %}
+    </div>
+  </section>
+
+  <section id="contact" class="wrap" style="padding-bottom:96px">
+    <div class="card contact-card">
+      <p class="mono" style="margin:0;color:#8B8A86">{{ s.availability }}</p>
+      <h2 class="up">{{ s.contact.question }} <span>{{ s.contact.highlight }}</span></h2>
+      <div class="contact-actions">
+        {%- for b in s.contact.buttons %}
+        <a class="btn {{ 'btn-primary' if b.primary else 'btn-ghost' }}" href="{{ b.url }}" target="_blank" rel="noopener">{{ b.label }}</a>
+        {%- endfor %}
+        <a class="mono" href="mailto:{{ s.contact.email }}">{{ s.contact.email }}</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer class="wrap" style="padding-bottom:48px">
+    <div class="footer-grid stagger">
+      <div><div class="footer-brand"><img src="/images/logo-white.png" alt="" width="24" height="24"><span style="font-weight:600">{{ s.brandName }} Design</span></div><p>{{ s.footer.text }}</p></div>
+      <div class="mono"><span class="label">Pages</span><a href="#work">Work</a><a href="#services">Services</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></div>
+      <div class="mono"><span class="label">Elsewhere</span><a href="{{ s.footer.instagramUrl }}" target="_blank" rel="noopener">Instagram {{ s.footer.instagram }}</a></div>
+      <div class="mono"><span class="label">Say hello</span><a href="mailto:{{ s.contact.email }}">{{ s.contact.email }}</a></div>
+    </div>
+    <p class="mono copy">© {{ year }} {{ s.brandName }} Design. All rights reserved.</p>
+  </footer>
+</div>
+<script src="/js/site.js" defer></script>
+{%- if s.analytics.cloudflareToken %}
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ s.analytics.cloudflareToken }}"}'></script>
+{%- endif %}
+</body>
+</html>
