@@ -16,9 +16,18 @@
     "workLink": "See selected work ↓"
   },
   "stats": [
-    { "value": "48h", "label": "Concept preview" },
-    { "value": "Zero", "label": "Upfront commitment" },
-    { "value": "2x", "label": "Refinement rounds" }
+    {
+      "value": "48h",
+      "label": "Concept preview"
+    },
+    {
+      "value": "Zero",
+      "label": "Upfront commitment"
+    },
+    {
+      "value": "2x",
+      "label": "Refinement rounds"
+    }
   ],
   "work": {
     "title": "Selected work",
@@ -38,10 +47,22 @@
       "cover": "/images/projects/mill-1.jpg",
       "coverAlt": "Black MILL coffee bag with the new mountain-and-horizon logo",
       "images": [
-        { "src": "/images/projects/mill-2.jpg", "alt": "MILL symbol: mountain peaks over the Baltic horizon" },
-        { "src": "/images/projects/mill-3.jpg", "alt": "MILL logo sheet with all versions, colours and font" },
-        { "src": "/images/projects/mill-4.jpg", "alt": "MILL logo on a thermos" },
-        { "src": "/images/projects/mill-5.jpg", "alt": "MILL wall sign" }
+        {
+          "src": "/images/projects/mill-2.jpg",
+          "alt": "MILL symbol: mountain peaks over the Baltic horizon"
+        },
+        {
+          "src": "/images/projects/mill-3.jpg",
+          "alt": "MILL logo sheet with all versions, colours and font"
+        },
+        {
+          "src": "/images/projects/mill-4.jpg",
+          "alt": "MILL logo on a thermos"
+        },
+        {
+          "src": "/images/projects/mill-5.jpg",
+          "alt": "MILL wall sign"
+        }
       ]
     },
     {
@@ -57,10 +78,22 @@
       "cover": "/images/projects/bbfactory-1.jpg",
       "coverAlt": "BB Factory dropper bottles and jar with the new B logo",
       "images": [
-        { "src": "/images/projects/bbfactory-2.jpg", "alt": "BB Factory molecule B symbol on green" },
-        { "src": "/images/projects/bbfactory-3.jpg", "alt": "BB Factory logo sheet with all versions, colours and fonts" },
-        { "src": "/images/projects/bbfactory-4.jpg", "alt": "BB Factory round shop sign" },
-        { "src": "/images/projects/bbfactory-5.jpg", "alt": "BB Factory online shop on two phones" }
+        {
+          "src": "/images/projects/bbfactory-2.jpg",
+          "alt": "BB Factory molecule B symbol on green"
+        },
+        {
+          "src": "/images/projects/bbfactory-3.jpg",
+          "alt": "BB Factory logo sheet with all versions, colours and fonts"
+        },
+        {
+          "src": "/images/projects/bbfactory-4.jpg",
+          "alt": "BB Factory round shop sign"
+        },
+        {
+          "src": "/images/projects/bbfactory-5.jpg",
+          "alt": "BB Factory online shop on two phones"
+        }
       ]
     },
     {
@@ -76,10 +109,22 @@
       "cover": "/images/projects/brengulu-1.jpg",
       "coverAlt": "Light and dark Brenguļu alus bottles with the new labels",
       "images": [
-        { "src": "/images/projects/brengulu-2.jpg", "alt": "Flat Gaišais and Tumšais front labels" },
-        { "src": "/images/projects/brengulu-3.jpg", "alt": "Four bottles: the full range" },
-        { "src": "/images/projects/brengulu-4.jpg", "alt": "Close-up of the Since 1969 seal and wordmark" },
-        { "src": "/images/projects/brengulu-5.jpg", "alt": "Bottles on a wooden shelf" }
+        {
+          "src": "/images/projects/brengulu-2.jpg",
+          "alt": "Flat Gaišais and Tumšais front labels"
+        },
+        {
+          "src": "/images/projects/brengulu-3.jpg",
+          "alt": "Four bottles: the full range"
+        },
+        {
+          "src": "/images/projects/brengulu-4.jpg",
+          "alt": "Close-up of the Since 1969 seal and wordmark"
+        },
+        {
+          "src": "/images/projects/brengulu-5.jpg",
+          "alt": "Bottles on a wooden shelf"
+        }
       ]
     },
     {
@@ -95,10 +140,22 @@
       "cover": "/images/projects/dabas-1.jpg",
       "coverAlt": "Dabas Pieskāriens scrub jar with the new label",
       "images": [
-        { "src": "/images/projects/dabas-2.jpg", "alt": "Flat front and back labels" },
-        { "src": "/images/projects/dabas-3.jpg", "alt": "Two jar versions with lid stickers" },
-        { "src": "/images/projects/dabas-4.jpg", "alt": "Close-up of the Miers & Harmonija label" },
-        { "src": "/images/projects/dabas-5.jpg", "alt": "Jars on a wooden shelf" }
+        {
+          "src": "/images/projects/dabas-2.jpg",
+          "alt": "Flat front and back labels"
+        },
+        {
+          "src": "/images/projects/dabas-3.jpg",
+          "alt": "Two jar versions with lid stickers"
+        },
+        {
+          "src": "/images/projects/dabas-4.jpg",
+          "alt": "Close-up of the Miers & Harmonija label"
+        },
+        {
+          "src": "/images/projects/dabas-5.jpg",
+          "alt": "Jars on a wooden shelf"
+        }
       ]
     }
   ],
@@ -106,27 +163,63 @@
     "title": "What I do",
     "intro": "Three ways we can work together. Every project ends with print-ready files your printer can use straight away.",
     "items": [
-      { "title": "Labels & packaging", "text": "Labels and packaging for any product, from bottles and jars to boxes and pouches, designed to be noticed in seconds." },
-      { "title": "Logo", "text": "An identity that makes a small brand look established and trustworthy from day one." },
-      { "title": "Merch", "text": "Merch people actually want to wear, so your brand travels further than your product." }
+      {
+        "title": "Labels & packaging",
+        "text": "Labels and packaging for any product, from bottles and jars to boxes and pouches, designed to be noticed in seconds."
+      },
+      {
+        "title": "Logo",
+        "text": "An identity that makes a small brand look established and trustworthy from day one."
+      },
+      {
+        "title": "Merch",
+        "text": "Merch people actually want to wear, so your brand travels further than your product."
+      }
     ]
   },
   "process": {
     "title": "How I work",
     "steps": [
-      { "title": "Short brief", "text": "A 10-minute form about your product, your customers and where they'll see it." },
-      { "title": "Concept preview in 48h", "text": "Two tailored directions presented on real mockups. You only pay if you choose to move forward." },
-      { "title": "Pick & refine", "text": "Fixed price agreed up front. 50% deposit, then 2 refinement rounds." },
-      { "title": "Print-ready files", "text": "Final files for print and web after the remaining 50%." }
+      {
+        "title": "Short brief",
+        "text": "A 10-minute form about your product, your customers and where they'll see it."
+      },
+      {
+        "title": "Concept preview in 48h",
+        "text": "Two tailored directions presented on real mockups. You only pay if you choose to move forward."
+      },
+      {
+        "title": "Pick & refine",
+        "text": "Fixed price agreed up front. 50% deposit, then 2 refinement rounds."
+      },
+      {
+        "title": "Print-ready files",
+        "text": "Final files for print and web after the remaining 50%."
+      }
     ]
   },
   "pricing": {
     "title": "Fixed prices",
     "note": "No hourly billing · No monthly fees",
     "items": [
-      { "title": "Labels & packaging", "price": "€450", "text": "Front, back and side design for any packaging type, prepared to your printer's template, plus a mockup of your actual product.", "featured": false },
-      { "title": "Logo", "price": "€550", "text": "Custom logo with full-color and black & white versions, compact icon, brand colors, fonts, and files for print and web.", "featured": false },
-      { "title": "Merch", "price": "€250", "text": "Custom artwork adapted for any apparel, physical product, or promotional item your brand needs.", "featured": true }
+      {
+        "title": "Labels & packaging",
+        "price": "€450",
+        "text": "Front, back and side design for any packaging type, prepared to your printer's template, plus a mockup of your actual product.",
+        "featured": false
+      },
+      {
+        "title": "Logo",
+        "price": "€550",
+        "text": "Custom logo with full-color and black & white versions, compact icon, brand colors, fonts, and files for print and web.",
+        "featured": false
+      },
+      {
+        "title": "Merch",
+        "price": "€250",
+        "text": "Custom artwork adapted for any apparel, physical product, or promotional item your brand needs.",
+        "featured": true
+      }
     ],
     "combined": "Need more than one?",
     "combinedLink": "Ask for a combined price →"
@@ -134,9 +227,18 @@
   "faq": {
     "title": "Questions",
     "items": [
-      { "question": "How does the concept preview work?", "answer": "Within 48 hours you get two tailored directions presented on real mockups. You only pay if you choose to move forward." },
-      { "question": "How long does a full project take?", "answer": "Most logos and labels take 1–2 weeks after you pick a direction; a full packaging range or several products can take 3–4 weeks. Every project depends on its scope, so you get a fixed timeline together with your quote." },
-      { "question": "Do you handle printing?", "answer": "I don't print myself, but I prepare print-ready files to your printer's exact template and specifications, so they can print straight away." }
+      {
+        "question": "How does the concept preview work?",
+        "answer": "Within 48 hours you get two tailored directions presented on real mockups. You only pay if you choose to move forward."
+      },
+      {
+        "question": "How long does a full project take?",
+        "answer": "Most logos and labels take 1–2 weeks after you pick a direction; a full packaging range or several products can take 3–4 weeks. Every project depends on its scope, so you get a fixed timeline together with your quote."
+      },
+      {
+        "question": "Do you handle printing?",
+        "answer": "I don't print myself, but I prepare print-ready files to your printer's exact template and specifications, so they can print straight away."
+      }
     ]
   },
   "contact": {
@@ -144,8 +246,16 @@
     "highlight": "Let's fix that.",
     "email": "rihards@swiftprimedesign.com",
     "buttons": [
-      { "label": "Labels & packaging brief →", "url": "https://docs.google.com/forms/d/e/1FAIpQLSdSpTPsYL_ZpIvhV5sgsjQ-ioVf0UBWF64Jfr0WJ23GtgWahQ/viewform", "primary": true },
-      { "label": "Logo / merch brief →", "url": "https://docs.google.com/forms/d/e/1FAIpQLSd4FiNnpkdwyTl1WuOF9zmeLS0_O3zKqChJYuwwcJbz4I7_Gw/viewform", "primary": false }
+      {
+        "label": "Labels & packaging brief →",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdSpTPsYL_ZpIvhV5sgsjQ-ioVf0UBWF64Jfr0WJ23GtgWahQ/viewform",
+        "primary": true
+      },
+      {
+        "label": "Logo / merch brief →",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSd4FiNnpkdwyTl1WuOF9zmeLS0_O3zKqChJYuwwcJbz4I7_Gw/viewform",
+        "primary": false
+      }
     ]
   },
   "footer": {
@@ -154,6 +264,6 @@
     "instagramUrl": "https://www.instagram.com/swiftprimedesign/"
   },
   "analytics": {
-    "cloudflareToken": ""
+    "cloudflareToken": "be7a928fc0ea41ccb657089c4c459e58"
   }
 }
