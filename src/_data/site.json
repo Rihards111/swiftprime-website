@@ -1,11 +1,4 @@
 {
-  "meta": {
-    "title": "Swiftprime Design – labels, packaging and logos that sell",
-    "description": "Rihards, designer of labels, packaging, logos and merch for growing brands. Concept preview in 48h – you only pay if you choose to move forward.",
-    "shareImage": "/images/projects/mill-1.jpg"
-  },
-  "brandName": "Swiftprime",
-  "brandTagline": "Labels & packaging · Logo · Merch",
   "availability": "Taking 2 new projects in December",
   "hero": {
     "before": "I design labels that",
@@ -185,8 +178,8 @@
         "text": "A 10-minute form about your product, your customers and where they'll see it."
       },
       {
-        "title": "Concept preview in 48h",
-        "text": "Two tailored directions presented on real mockups. You only pay if you choose to move forward."
+        "title": "Concept previews",
+        "text": "Two tailored directions delivered in 48h on real mockups. You only pay if you choose to move forward."
       },
       {
         "title": "Pick & refine",
@@ -263,6 +256,13 @@
     "instagram": "@swiftprimedesign",
     "instagramUrl": "https://www.instagram.com/swiftprimedesign/"
   },
+  "meta": {
+    "title": "Swiftprime Design – labels, packaging and logos that sell",
+    "description": "Rihards, designer of labels, packaging, logos and merch for growing brands. Concept preview in 48h – you only pay if you choose to move forward.",
+    "shareImage": "/images/projects/mill-1.jpg"
+  },
+  "brandName": "Swiftprime",
+  "brandTagline": "Labels & packaging · Logo · Merch",
   "analytics": {
     "cloudflareToken": "be7a928fc0ea41ccb657089c4c459e58"
   }
