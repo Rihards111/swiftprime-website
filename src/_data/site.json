@@ -266,5 +266,21 @@
   "analytics": {
     "cloudflareToken": "be7a928fc0ea41ccb657089c4c459e58",
     "clarityId": "zh1jesswu7"
+  },
+  "about": {
+    "title": "About me",
+    "photo": "/images/rihards.jpg",
+    "photoAlt": "Rihards, designer at Swiftprime",
+    "text": [
+      "I'm Rihards, the designer behind Swiftprime.",
+      "I focus on labels, packaging and logos, because that's where design does its hardest job: getting someone to pick your product in a few seconds.",
+      "You work directly with me, from the first brief to the print-ready files – no account managers, no handovers."
+    ]
+  },
+  "contactForm": {
+    "title": "Contact form",
+    "intro": "Just a question, or need a combined price? Send a quick message.",
+    "button": "Send message →",
+    "thanks": "Thanks – your message is on its way. I reply within 1 working day."
   }
 }

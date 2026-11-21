@@ -35,6 +35,7 @@ permalink: /index.html
         <a href="#work">Work</a>
         <a href="#services">Services</a>
         <a href="#process">Process</a>
+        <a href="#about">About</a>
         <a href="#pricing">Pricing</a>
         <a class="btn nav-cta" href="#contact"><span class="dot" aria-hidden="true" style="background:#FF5A1F"></span>Start a brief</a>
       </div>
@@ -154,6 +155,18 @@ permalink: /index.html
     </div>
   </section>
 
+  <section id="about" class="wrap section">
+    <div class="rule about">
+      <div class="about-photo zoomin"><img src="{{ s.about.photo }}" alt="{{ s.about.photoAlt }}" loading="lazy" width="1000" height="1250"></div>
+      <div class="about-text">
+        <h2 class="h-section reveal">{{ s.about.title | words | safe }}</h2>
+        <div class="stagger">
+          {%- for t in s.about.text %}<p>{{ t }}</p>{% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="contact" class="wrap" style="padding-bottom:96px">
     <div class="card contact-card">
       <p class="mono" style="margin:0;display:flex;align-items:center;gap:10px;color:#8B8A86"><span class="dot" aria-hidden="true" style="background:#3BD671"></span>{{ s.availability }}</p>
@@ -163,6 +176,26 @@ permalink: /index.html
         <a class="btn {{ 'btn-primary' if b.primary else 'btn-ghost' }}" href="{{ b.url }}" target="_blank" rel="noopener">{{ b.label }}</a>
         {%- endfor %}
         <a class="mono" href="mailto:{{ s.contact.email }}">{{ s.contact.email }}</a>
+      </div>
+      <div class="qform">
+        <div><h3>{{ s.contactForm.title }}</h3><p>{{ s.contactForm.intro }}</p></div>
+        <form name="contact" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company-website">
+          <input type="hidden" name="form-name" value="contact">
+          <p hidden><label>Leave empty <input name="company-website" tabindex="-1" autocomplete="off"></label></p>
+          <div class="qrow">
+            <label>Name<input type="text" name="name" required autocomplete="name" placeholder="Anna Bērziņa"></label>
+            <label>Email<input type="email" name="email" required autocomplete="email" placeholder="anna@brand.lv"></label>
+          </div>
+          <fieldset><legend>What do you need?</legend>
+            <div class="chips">
+              {%- for it in s.services.items %}
+              <label class="chip"><input type="checkbox" name="need" value="{{ it.title }}">{{ it.title }}</label>
+              {%- endfor %}
+            </div>
+          </fieldset>
+          <label>Message<textarea name="message" rows="4" required placeholder="A few words about your product, or ask for a combined price."></textarea></label>
+          <button type="submit" class="btn btn-light">{{ s.contactForm.button }}</button>
+        </form>
       </div>
     </div>
   </section>

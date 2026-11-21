@@ -201,3 +201,30 @@ details.q p{margin:14px 0 0;font-size:16px;line-height:1.65;color:#A9A7A1}
 .legal h1{font-size:clamp(40px,6vw,56px);font-weight:500;letter-spacing:-.03em;margin:0 0 24px}
 .legal h2{font-size:22px;font-weight:500;margin:40px 0 10px}
 .legal p,.legal li{font-size:16px;line-height:1.7;color:#CFCDC7}
+
+/* about */
+.about{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center}
+.about-photo{border-radius:20px;overflow:hidden;background:#141416;aspect-ratio:4/5}
+.about-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.about-text{display:flex;flex-direction:column;gap:24px}
+.about-text p{margin:0 0 16px;font-size:19px;line-height:1.65;color:#A9A7A1;max-width:560px}
+.about-text p:first-child{color:#EDEBE6;font-size:22px}
+@media (max-width:820px){.about{grid-template-columns:1fr;gap:32px}.about-photo{max-width:420px}}
+
+/* quick contact form */
+.qform{border-top:1px solid #232327;padding-top:32px;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px}
+.qform h3{margin:0 0 10px;font-size:28px;font-weight:500;letter-spacing:-.02em}
+.qform>div>p{margin:0;font-size:16px;line-height:1.6;color:#A9A7A1}
+.qform form{display:flex;flex-direction:column;gap:16px}
+.qform label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#A9A7A1}
+.qrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.qform input[type=text],.qform input[type=email],.qform textarea{width:100%;background:#0F0F11;border:1px solid #2A2A2E;border-radius:12px;padding:14px 16px;color:#EDEBE6;font:inherit;font-size:16px}
+.qform textarea{resize:vertical}
+.qform ::placeholder{color:#6E6D69}
+.qform fieldset{border:0;padding:0;margin:0}
+.qform legend{font-size:14px;color:#A9A7A1;margin-bottom:8px;padding:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.qform .chip{flex-direction:row;align-items:center;gap:8px;border:1px solid #34343A;border-radius:999px;padding:10px 16px;font-size:14px;color:#EDEBE6;cursor:pointer;min-height:44px}
+.chip input{accent-color:#FF5A1F;width:16px;height:16px;margin:0}
+.btn-light{align-self:flex-start;background:#EDEBE6;color:#0B0B0C;border:0;border-radius:999px;padding:16px 24px;font:inherit;font-weight:600;font-size:16px;cursor:pointer;min-height:44px}
+@media (max-width:820px){.qform{grid-template-columns:1fr;gap:20px}.qrow{grid-template-columns:1fr}}

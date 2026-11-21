@@ -113,6 +113,22 @@ content:
             fields:
               - { name: question, label: Question, type: string }
               - { name: answer, label: Answer, type: text }
+      - name: about
+        label: About me
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - { name: photo, label: Photo, type: image }
+          - { name: photoAlt, label: Photo description, type: string }
+          - { name: text, label: Paragraphs, type: text, list: true }
+      - name: contactForm
+        label: Contact form
+        type: object
+        fields:
+          - { name: title, label: Heading, type: string }
+          - { name: intro, label: Intro, type: string }
+          - { name: button, label: Button, type: string }
+          - { name: thanks, label: Thank-you message, type: text }
       - name: contact
         label: Contact
         type: object
