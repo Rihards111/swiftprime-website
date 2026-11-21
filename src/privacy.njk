@@ -1,0 +1,46 @@
+---
+permalink: /privacy/index.html
+---
+{%- set s = site -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy – {{ s.brandName }} Design</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/images/logo-dark.png">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<div class="page">
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Main">
+      <a href="/" class="brand"><img src="/images/logo-white.png" alt="" width="26" height="26"><span class="brand-name">{{ s.brandName }}</span></a>
+      <div class="nav-links"><a class="btn nav-cta" href="/#contact">Start a brief</a></div>
+    </nav>
+  </header>
+  <main class="wrap legal">
+    <h1>Privacy</h1>
+    <p>This website is run by Rihards Grundejs ({{ s.brandName }} Design). Questions about your data: <a href="mailto:{{ s.contact.email }}">{{ s.contact.email }}</a>.</p>
+
+    <h2>Visitor statistics (no cookies)</h2>
+    <p>I use Cloudflare Web Analytics to count visits, see which pages are viewed and where visitors come from. It uses no cookies and does not identify you.</p>
+
+    <h2>Visit recordings (only with your consent)</h2>
+    <p>If you click “Accept”, Microsoft Clarity records how you use the site – clicks, scrolling and mouse movement – so I can improve it. Clarity uses cookies and processes data on Microsoft’s servers. Text you type is masked. If you click “Decline”, Clarity does not load. You can change your choice any time with “Cookie settings” at the bottom of the home page. More: <a href="https://privacy.microsoft.com/privacystatement" rel="noopener">Microsoft Privacy Statement</a>.</p>
+
+    <h2>Briefs and emails</h2>
+    <p>When you fill in a brief (Google Forms) or email me, I use your details only to reply and work on your project. I don’t sell or share them for marketing.</p>
+
+    <h2>Hosting</h2>
+    <p>The site is hosted by Netlify, which processes technical data such as IP addresses to deliver the pages securely.</p>
+
+    <h2>Your rights</h2>
+    <p>You can ask to see, correct or delete your data by emailing me. You can also complain to your national data protection authority.</p>
+
+    <p><a href="/">← Back to the website</a></p>
+  </main>
+</div>
+</body>
+</html>

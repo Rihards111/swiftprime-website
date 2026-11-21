@@ -176,10 +176,20 @@ permalink: /index.html
       <div class="mono"><span class="label">Elsewhere</span><a href="{{ s.footer.instagramUrl }}" target="_blank" rel="noopener">Instagram {{ s.footer.instagram }}</a></div>
       <div class="mono"><span class="label">Say hello</span><a href="mailto:{{ s.contact.email }}">{{ s.contact.email }}</a></div>
     </div>
-    <p class="mono copy">© {{ year }} {{ s.brandName }} Design. All rights reserved.</p>
+    <p class="mono copy">© {{ year }} {{ s.brandName }} Design. All rights reserved. · <a href="/privacy/">Privacy</a> · <button type="button" class="link-btn mono" data-cookie-settings>Cookie settings</button></p>
   </footer>
 </div>
 <script src="/js/site.js" defer></script>
+{%- if s.analytics.clarityId %}
+<div class="cookie" id="cookie" role="dialog" aria-label="Cookie choice" hidden>
+  <p>Can I record anonymous visits with Microsoft Clarity to see how people use this site? It uses cookies. <a href="/privacy/">Privacy</a></p>
+  <div class="cookie-actions">
+    <button type="button" class="btn cookie-yes" data-consent="yes">Accept</button>
+    <button type="button" class="btn cookie-no" data-consent="no">Decline</button>
+  </div>
+</div>
+<script>window.CLARITY_ID = "{{ s.analytics.clarityId }}";</script>
+{%- endif %}
 {%- if s.analytics.cloudflareToken %}
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ s.analytics.cloudflareToken }}"}'></script>
 {%- endif %}
