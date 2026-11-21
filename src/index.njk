@@ -80,7 +80,6 @@ permalink: /index.html
   <section id="work" class="wrap section work">
     <div class="rule work-head">
       <h2 class="h-section reveal">{{ s.work.title | words | safe }}</h2>
-      <a href="#contact" class="mono" style="text-decoration:none;color:#A9A7A1">{{ s.work.link }}</a>
     </div>
     {%- for p in s.projects %}
     <article class="card zoom project" style="top:{{ 96 + loop.index0 * 20 }}px">

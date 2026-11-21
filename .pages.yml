@@ -33,7 +33,6 @@ content:
         type: object
         fields:
           - { name: title, label: Heading, type: string }
-          - { name: link, label: Small link, type: string }
       - name: projects
         label: Projects
         type: object
