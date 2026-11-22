@@ -3,6 +3,36 @@
 // POST /api/data             (logged in)  -> panel actions (status change, reason tag, change log …)
 // POST /api/data?src=task    (x-api-key)  -> the daily cloud task / brief script sends data in
 import { readJSON, writeJSON, json, isLoggedIn, hasApiKey, env, uid, today } from './lib/common.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+// Encrypted inbox: the daily task commits panel-inbox/inbox.enc to GitHub (the repo is public, so it is
+// encrypted with PANEL_API_KEY). Each deploy bundles it; new batches are applied once.
+function readInbox() {
+  const roots = [process.env.LAMBDA_TASK_ROOT, process.cwd(), '/var/task'].filter(Boolean);
+  for (const r of roots) {
+    const f = path.join(r, 'panel-inbox', 'inbox.enc');
+    if (fs.existsSync(f)) {
+      const box = JSON.parse(fs.readFileSync(f, 'utf8'));
+      const key = crypto.createHash('sha256').update(env('PANEL_API_KEY') || '').digest();
+      const d = crypto.createDecipheriv('aes-256-gcm', key, Buffer.from(box.iv, 'base64'));
+      d.setAuthTag(Buffer.from(box.tag, 'base64'));
+      return JSON.parse(Buffer.concat([d.update(Buffer.from(box.data, 'base64')), d.final()]).toString('utf8'));
+    }
+  }
+  return null;
+}
+async function applyInbox() {
+  try {
+    const inbox = readInbox();
+    if (!inbox) return;
+    const done = await readJSON('inbox-applied', []);
+    const fresh = (inbox.batches || []).filter((b) => !done.includes(b.id));
+    for (const b of fresh) { await applyActions(b.actions || [], 'task'); done.push(b.id); }
+    if (fresh.length) await writeJSON('inbox-applied', done.slice(-500));
+  } catch (e) { console.log('inbox error', e.message); }
+}
 
 const CF_ACCOUNT = '';              // filled in when known; env CF_ACCOUNT_ID also works
 const HOST = 'swiftprimedesign.com';
@@ -164,6 +194,7 @@ export default async (req) => {
     } catch (e) { return json({ error: String(e.message || e) }, 400); }
   }
 
+  await applyInbox();
   const month = today().slice(0, 7);
   const prev = new Date(Date.now() - 31 * 864e5).toISOString().slice(0, 7);
   const [leads, changelog, settings, health, warmerly, ig, c1, c2, cf, cl] = await Promise.all([
