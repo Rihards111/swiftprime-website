@@ -31,10 +31,10 @@
   var STEPS = [
     { k: 'sent', label: 'Contacted', min: 1 },
     { k: 'replied', label: 'Replied', target: 4, fix: { title: 'Few replies', items: ['Run a Warmerly placement test – spam first.', 'Compare score-3 vs score-1 below: same low rate = message problem, big difference = targeting.', 'Rewrite the first line of the day 0 email. Change only that, wait 100 sends.'] } },
-    { k: 'interested', label: 'Interested', target: 30, fix: { title: 'Replies are mostly “no”', items: ['Send the numbered question to every “no” and tag the reason.', 'Mostly “have a designer” = targeting. Mostly “current design works” = message: show the problem.', 'Mostly “budget” = offer: mention the €382 start option.'] } },
+    { k: 'interested', label: 'Interested', target: 30, fix: { title: 'Replies are mostly “no”', items: ['Send the numbered question to every “no” and tag the reason.', 'Mostly “have a designer” = targeting. Mostly “current design works” = message: show the problem.', 'Mostly “budget” = price: check the budget answers in the briefs; if many say it, change prices overall.'] } },
     { k: 'qualified', label: 'Brief in', target: 50, fix: { title: 'Briefs not filled', items: ['Send the brief reminder after 2 days.', 'Ask lost ones: too long / unclear / not now / prefer to talk?', 'Offer “just answer 3 questions by email”.'] } },
     { k: 'concept', label: 'Concept sent', target: 90, fix: { title: 'Concepts not delivered in time', items: ['This one is your speed – block 48h after each brief.', 'Pause new outreach while 3+ concepts are waiting.'] } },
-    { k: 'won', label: 'Paid', target: 30, fix: { title: 'Concepts don’t turn into money', items: ['Send the concept as a page link – see if they opened it.', 'Check their budget answer vs your price; offer the €382 start.', 'Day 10 “close your file?” message – ask why.'] } }
+    { k: 'won', label: 'Paid', target: 30, fix: { title: 'Concepts don’t turn into money', items: ['Send the concept as a page link – see if they opened it.', 'Check their budget answer vs your price. Many say price → change prices overall.', 'Day 10 “close your file?” message – ask why.'] } }
   ];
 
   function maxRank(l) {
@@ -157,7 +157,7 @@
       if (l.status === 'qualified') t.push([1, l, 'Make the concepts', 'Brief in ' + since(lastAt(l, 'qualified')) + ' day(s) ago – 48h promise']);
       if (l.status === 'concept_sent') {
         d = since(lastAt(l, 'concept_sent'));
-        var f = d >= 10 ? 'Day 10: “close your file?”' : d >= 5 ? 'Day 5 follow-up (€382 start)' : d >= 2 ? 'Day 2 follow-up' : null;
+        var f = d >= 10 ? 'Day 10: “close your file?”' : d >= 5 ? 'Day 5 follow-up (change anything?)' : d >= 2 ? 'Day 2 follow-up' : null;
         if (f) t.push([2, l, f, 'Concept sent ' + d + ' days ago']);
       }
       if (l.igTodo) t.push([3, l, 'Instagram: ' + l.igTodo, l.igText || '']);
