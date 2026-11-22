@@ -37,7 +37,7 @@ permalink: /index.html
         <a href="#process">Process</a>
         <a href="#about">About</a>
         <a href="#pricing">Pricing</a>
-        <a class="btn nav-cta" href="#contact"><span class="dot" aria-hidden="true" style="background:#FF5A1F"></span>Start a brief</a>
+        <a class="btn nav-cta" href="#contact" data-track="cta-nav"><span class="dot" aria-hidden="true" style="background:#FF5A1F"></span>Start a brief</a>
       </div>
     </nav>
   </header>
@@ -55,7 +55,7 @@ permalink: /index.html
       <div class="hero-copy">
         <p>{{ s.hero.intro }}</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
-          <a class="btn btn-primary" href="#contact">{{ s.hero.button }}</a>
+          <a class="btn btn-primary" href="#contact" data-track="cta-hero">{{ s.hero.button }}</a>
           <a class="mono" href="#work" style="text-decoration:none;color:#A9A7A1;padding:16px 8px">{{ s.hero.workLink }}</a>
         </div>
       </div>
@@ -93,7 +93,7 @@ permalink: /index.html
           <dt>Client</dt><dd>{{ p.client }}</dd>
           <dt>Year</dt><dd>{{ p.year }}</dd>
         </dl>
-        <button type="button" class="btn case-btn" aria-expanded="false" aria-controls="case-{{ loop.index }}">Open case →</button>
+        <button type="button" class="btn case-btn" aria-expanded="false" aria-controls="case-{{ loop.index }}" data-track="case-open-{{ p.slug }}">Open case →</button>
       </div>
       <div class="zoomin cover"><img src="{{ p.cover }}" alt="{{ p.coverAlt }}" loading="lazy" width="800" height="600"></div>
       <div class="case" id="case-{{ loop.index }}" hidden>
@@ -173,7 +173,7 @@ permalink: /index.html
       <h2 class="up">{{ s.contact.question }} <span>{{ s.contact.highlight }}</span></h2>
       <div class="contact-actions">
         {%- for b in s.contact.buttons %}
-        <a class="btn {{ 'btn-primary' if b.primary else 'btn-ghost' }}" href="{{ b.url }}" target="_blank" rel="noopener">{{ b.label }}</a>
+        <a class="btn {{ 'btn-primary' if b.primary else 'btn-ghost' }}" href="{{ b.url }}" target="_blank" rel="noopener" data-track="brief-{{ 'labels' if loop.first else 'logo' }}">{{ b.label }}</a>
         {%- endfor %}
         <a class="mono" href="mailto:{{ s.contact.email }}">{{ s.contact.email }}</a>
       </div>

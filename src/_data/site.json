@@ -56,7 +56,8 @@
           "src": "/images/projects/mill-5.jpg",
           "alt": "MILL wall sign"
         }
-      ]
+      ],
+      "slug": "mill"
     },
     {
       "title": "BB Factory",
@@ -87,7 +88,8 @@
           "src": "/images/projects/bbfactory-5.jpg",
           "alt": "BB Factory online shop on two phones"
         }
-      ]
+      ],
+      "slug": "bbfactory"
     },
     {
       "title": "Brenguļu alus",
@@ -118,7 +120,8 @@
           "src": "/images/projects/brengulu-5.jpg",
           "alt": "Bottles on a wooden shelf"
         }
-      ]
+      ],
+      "slug": "brengulu"
     },
     {
       "title": "Dabas Pieskāriens",
@@ -149,7 +152,8 @@
           "src": "/images/projects/dabas-5.jpg",
           "alt": "Jars on a wooden shelf"
         }
-      ]
+      ],
+      "slug": "dabas"
     }
   ],
   "services": {
@@ -241,12 +245,12 @@
     "buttons": [
       {
         "label": "Labels & packaging brief →",
-        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdSpTPsYL_ZpIvhV5sgsjQ-ioVf0UBWF64Jfr0WJ23GtgWahQ/viewform",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdSpTPsYL_ZpIvhV5sgsjQ-ioVf0UBWF64Jfr0WJ23GtgWahQ/viewform?usp=pp_url&entry.2118949516=Website",
         "primary": true
       },
       {
         "label": "Logo / merch brief →",
-        "url": "https://docs.google.com/forms/d/e/1FAIpQLSd4FiNnpkdwyTl1WuOF9zmeLS0_O3zKqChJYuwwcJbz4I7_Gw/viewform",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSd4FiNnpkdwyTl1WuOF9zmeLS0_O3zKqChJYuwwcJbz4I7_Gw/viewform?usp=pp_url&entry.1875573346=Website",
         "primary": false
       }
     ]

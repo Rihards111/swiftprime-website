@@ -42,3 +42,13 @@ document.querySelectorAll('.case-btn').forEach(function (btn) {
     b.addEventListener('click', function () { box.hidden = false; });
   });
 })();
+
+// Anonymous click counter for the panel: no cookies, no personal data – only which button and which page.
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('[data-track]'); if (!el) return;
+  var data = JSON.stringify({ e: el.getAttribute('data-track'), p: location.pathname, r: document.referrer ? new URL(document.referrer).hostname : '' });
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon('/api/track', new Blob([data], { type: 'application/json' }));
+    else fetch('/api/track', { method: 'POST', body: data, keepalive: true, headers: { 'Content-Type': 'application/json' } });
+  } catch (err) {}
+});

@@ -1,0 +1,105 @@
+---
+permalink: /panel/index.html
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel – Swiftprime</title>
+<link rel="icon" type="image/png" href="/images/logo-dark.png">
+<link rel="stylesheet" href="/css/panel.css">
+</head>
+<body>
+<div id="login" class="login" hidden>
+  <form id="login-form" class="card login-card">
+    <img src="/images/logo-white.png" alt="" width="32" height="32">
+    <h1>Swiftprime panel</h1>
+    <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+    <button class="btn primary" type="submit">Open panel</button>
+    <p class="muted" id="login-msg" role="status"></p>
+  </form>
+</div>
+
+<div id="app" class="app" hidden>
+  <nav class="side" aria-label="Panel sections">
+    <a class="brand" href="#top"><img src="/images/logo-white.png" alt="" width="26" height="26"><span><b>Swiftprime</b><small>Control panel</small></span></a>
+    <a href="#funnel">Funnel</a>
+    <a href="#today">Today</a>
+    <a href="#approve">Leads to approve</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#website">Website</a>
+    <a href="#money">Money</a>
+    <a href="#system">System health</a>
+    <a href="#changes">Change log</a>
+    <button type="button" class="btn ghost small" id="logout">Log out</button>
+  </nav>
+
+  <main id="top" class="main">
+    <header class="top">
+      <div>
+        <p class="mono muted" id="today-date"></p>
+        <h1>Good <span id="daypart">day</span>, Rihards</h1>
+      </div>
+      <div class="row">
+        <button type="button" class="btn ghost" id="refresh">Refresh</button>
+        <button type="button" class="btn ghost" id="add-lead">+ Add lead</button>
+      </div>
+    </header>
+
+    <section id="funnel" class="card">
+      <div class="head"><h2>Funnel</h2><span class="mono muted">All time · first step below target is red</span></div>
+      <div id="funnel-steps" class="funnel"></div>
+      <div id="funnel-why" class="why"></div>
+    </section>
+
+    <section id="today" class="card">
+      <div class="head"><h2>Today</h2><span class="mono muted" id="today-count"></span></div>
+      <div id="today-list" class="list"></div>
+    </section>
+
+    <section id="approve" class="card">
+      <div class="head"><h2>Leads to approve</h2><span class="mono muted">Nothing is sent until you approve</span></div>
+      <div id="approve-list" class="list"></div>
+    </section>
+
+    <section id="pipeline" class="card">
+      <div class="head"><h2>Pipeline</h2><span class="mono muted">Click a lead to change it</span></div>
+      <div id="pipe" class="pipe"></div>
+    </section>
+
+    <div class="grid2">
+      <section id="website" class="card">
+        <div class="head"><h2>Website · 30 days</h2><a class="mono muted" href="https://clarity.microsoft.com/" target="_blank" rel="noopener">Open recordings ↗</a></div>
+        <div id="web"></div>
+      </section>
+      <section id="money" class="card">
+        <div class="head"><h2>Money</h2></div>
+        <div id="money-box"></div>
+      </section>
+    </div>
+
+    <div class="grid2">
+      <section id="system" class="card">
+        <div class="head"><h2>System health</h2></div>
+        <div id="health"></div>
+      </section>
+      <section id="changes" class="card">
+        <div class="head"><h2>Change log</h2><span class="mono muted">One change at a time</span></div>
+        <form id="change-form" class="row wrap">
+          <select name="step" aria-label="Step"></select>
+          <input name="text" placeholder="What did you change? e.g. new first line in day 0 email" aria-label="What changed" required>
+          <button class="btn primary small" type="submit">Add</button>
+        </form>
+        <div id="change-list" class="list"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<dialog id="lead-dialog" class="dialog"></dialog>
+<p id="toast" class="toast" role="status" hidden></p>
+<script src="/js/panel.js" defer></script>
+</body>
+</html>
