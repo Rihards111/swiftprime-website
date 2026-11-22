@@ -8,7 +8,7 @@ const CF_ACCOUNT = '';              // filled in when known; env CF_ACCOUNT_ID a
 const HOST = 'swiftprimedesign.com';
 
 export const STATUSES = [
-  'found', 'approved', 'contacted', 'followup1', 'followup2', 'interested', 'brief_sent', 'qualified',
+  'found', 'approved', 'contacted', 'followup1', 'followup2', 'replied', 'interested', 'brief_sent', 'qualified',
   'concept_sent', 'revision', 'won', 'delivered',
   'lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'recontact', 'rejected'
 ];
@@ -59,6 +59,53 @@ async function clarity() {
   });
   if (!r.ok) throw new Error('Clarity ' + r.status);
   return { metrics: await r.json() };
+}
+
+
+// ---- Warmerly: campaign stats + per-lead progress (runs on the server, laptop not needed) ----
+const WM = 'https://app.warmerly.com/api/v1';
+const WM_PROJECT = 'a8d219bc-3780-4854-b993-eeac1258eb57';
+const CAMPAIGNS = {
+  '181b405d-ca2f-410f-93b3-426142e436c0': 'EN Baltic producers – labels',
+  '6d27b0ae-2788-492b-8a2f-a00f36db76da': 'LV producers – labels',
+  '0641365b-42c7-4a86-a3a8-4364c1c09cbc': 'Kickstarter – Route 1',
+  '71ec3032-7875-4713-8102-b9f19e146130': 'Kickstarter – Route 2'
+};
+const STEP_DAY = { '181b405d-ca2f-410f-93b3-426142e436c0': [0, 3, 7], '6d27b0ae-2788-492b-8a2f-a00f36db76da': [0, 3, 7], '0641365b-42c7-4a86-a3a8-4364c1c09cbc': [0, 4, 8], '71ec3032-7875-4713-8102-b9f19e146130': [0, 4, 8] };
+
+async function wm(path) {
+  const r = await fetch(WM + path, { headers: { 'X-Api-Key': env('WARMERLY_API_KEY'), 'X-Project-Id': WM_PROJECT } });
+  if (!r.ok) throw new Error('Warmerly ' + r.status + ' ' + path);
+  return r.json();
+}
+
+async function warmerlySync() {
+  if (!env('WARMERLY_API_KEY')) return { error: 'WARMERLY_API_KEY missing' };
+  const out = { campaigns: {}, sent: 0, replied: 0, bounced: 0 };
+  const leads = await readJSON('leads', []);
+  const byEmail = Object.fromEntries(leads.filter((l) => l.email).map((l) => [l.email.toLowerCase(), l]));
+  let changed = false;
+  for (const [id, name] of Object.entries(CAMPAIGNS)) {
+    const st = await wm('/campaigns/' + id + '/stats');
+    out.campaigns[name] = { leads: st.leads, emails: st.emails, rates: st.rates };
+    out.sent += st.emails?.sent || 0; out.replied += st.emails?.replied || 0; out.bounced += st.emails?.bounced || 0;
+    const list = await wm('/campaigns/' + id + '/leads?limit=1000');
+    for (const w of list.leads || []) {
+      const key = (w.email || '').toLowerCase(); if (!key) continue;
+      let l = byEmail[key];
+      if (!l) { l = { id: uid(), email: w.email, company: w.companyName, firstName: w.firstName, campaign: name, status: 'approved', history: [{ s: 'approved', at: w.createdAt }], createdAt: w.createdAt }; leads.push(l); byEmail[key] = l; changed = true; }
+      l.campaign = l.campaign || name;
+      const rank = { found: 0, approved: 0, contacted: 1, followup1: 1, followup2: 1 }[l.status];
+      let target = null;
+      if (w.status === 'bounced') target = 'bad_lead';
+      else if (w.status === 'replied') { if (rank != null) { target = 'replied'; l.repliedAfter = 'Day ' + ((STEP_DAY[id] || [])[Math.max(0, (w.currentStep || 1) - 1)] ?? '?') + ' email'; } }
+      else if (w.status === 'completed') { if (rank != null) target = 'lost_silent'; }
+      else if (rank != null && (w.sentCount || 0) > 0) target = ['contacted', 'followup1', 'followup2'][Math.min(2, (w.sentCount || 1) - 1)];
+      if (target && target !== l.status) { setStatus(l, target, { by: 'warmerly' }); changed = true; }
+    }
+  }
+  if (changed) await writeJSON('leads', leads);
+  return out;
 }
 
 function setStatus(lead, status, extra = {}) {
@@ -124,7 +171,9 @@ export default async (req) => {
     readJSON('warmerly', null), readJSON('ig', {}), readJSON('clicks-' + prev, {}), readJSON('clicks-' + month, {}),
     cached('cache-cf', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity)
   ]);
-  return json({ now: new Date().toISOString(), leads, changelog, settings, health, warmerly, ig, clicks: { ...c1, ...c2 }, cloudflare: cf, clarity: cl, statuses: STATUSES });
+  const wmData = await cached('cache-warmerly', 3600e3, warmerlySync);
+  const leadsNow = wmData && !wmData.error ? await readJSON('leads', leads) : leads;
+  return json({ now: new Date().toISOString(), leads: leadsNow, changelog, settings, health, warmerly: wmData || warmerly, ig, clicks: { ...c1, ...c2 }, cloudflare: cf, clarity: cl, statuses: STATUSES });
 };
 
 export const config = { path: '/api/data' };

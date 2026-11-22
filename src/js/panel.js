@@ -10,7 +10,7 @@
 
   // ---------- labels ----------
   var STATUS = {
-    found: 'Found', approved: 'Approved', contacted: 'Contacted', followup1: 'Follow-up 1', followup2: 'Follow-up 2',
+    found: 'Found', approved: 'Approved', contacted: 'Contacted', followup1: 'Follow-up 1', followup2: 'Follow-up 2', replied: 'Replied – read & tag',
     interested: 'Interested', brief_sent: 'Brief sent', qualified: 'Brief in (qualified)', concept_sent: 'Concept sent',
     revision: 'In revision', won: 'Won – paid', delivered: 'Delivered',
     lost_no: 'Lost – no', lost_silent: 'Lost – silent', lost_brief: 'Lost at brief', lost_ghost: 'Ghosted after concept',
@@ -24,7 +24,7 @@
     ['design', 'Concept / style not right', 'Concept'], ['other', 'Other / no reason', '—']
   ];
   var RANK = { found: 0, approved: 0, rejected: -1, contacted: 1, followup1: 1, followup2: 1, lost_silent: 1, bad_lead: 1, recontact: 1,
-    lost_no: 2, interested: 3, brief_sent: 3, lost_brief: 3, qualified: 4, concept_sent: 5, revision: 5, lost_ghost: 5,
+    lost_no: 2, replied: 2, interested: 3, brief_sent: 3, lost_brief: 3, qualified: 4, concept_sent: 5, revision: 5, lost_ghost: 5,
     lost_price: 5, lost_concept: 5, won: 6, delivered: 6 };
 
   // funnel steps: [key, label, test(maxRank, lead), target % of previous, fix guide]
@@ -150,6 +150,7 @@
     var t = [];
     D.leads.forEach(function (l) {
       var d;
+      if (l.status === 'replied') t.push([0, l, 'Replied – read it in Gmail and set Interested or Lost + reason', l.repliedAfter || '']);
       if (l.status === 'interested') t.push([0, l, 'Said yes – send the brief', 'Send the “after yes” message with the brief link']);
       if (l.status === 'lost_no' && !l.reason) t.push([1, l, 'Said no – send the numbered question', 'Then tag the reason']);
       if (l.status === 'brief_sent' && (d = since(lastAt(l, 'brief_sent'))) >= 2) t.push([2, l, 'Brief reminder (' + d + ' days)', 'No brief yet']);
@@ -178,7 +179,7 @@
     }).join('') : '<p class="empty">No new leads waiting. The daily task adds them here with a score and a personal line.</p>';
   }
 
-  var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead'], ['recontact']];
+  var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['replied', 'interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead'], ['recontact']];
   var COLN = ['Found / approved', 'Contacted', 'Interested', 'Brief in', 'Concept', 'Won', 'Lost', 'Re-contact later'];
   function renderPipe() {
     $('#pipe').innerHTML = COLS.map(function (c, i) {
@@ -229,7 +230,7 @@
       '<table><tr><th>Mailbox</th><th>Health</th></tr>' +
       ['rihards@swiftprimedesign.com', 'rihards@scribtly.com'].map(function (mb) { var v = (h.mailboxes || {})[mb]; return '<tr><td>' + mb + '</td><td>' + (v != null ? esc(v) + ' / 100' : '–') + '</td></tr>'; }).join('') + '</table>' +
       '<p class="s muted">Spam rate: ' + (h.spamRate != null ? esc(h.spamRate) + '%' : '–') + (h.updatedAt ? ' · updated ' + since(h.updatedAt) + ' day(s) ago' : '') + '</p>' +
-      (w ? '<p class="s muted">Warmerly: ' + esc(w.summary || 'synced ' + since(w.at) + ' day(s) ago') + '</p>' : '<p class="empty">Warmerly numbers appear after the first daily sync.</p>');
+      (w && w.campaigns ? '<table><tr><th>Campaign</th><th>Sent</th><th>Replies</th><th>Bounced</th></tr>' + Object.keys(w.campaigns).map(function (k) { var c = w.campaigns[k].emails || {}; return '<tr><td>' + esc(k) + '</td><td>' + (c.sent || 0) + '</td><td>' + (c.replied || 0) + '</td><td>' + (c.bounced || 0) + '</td></tr>'; }).join('') + '</table>' : '<p class="empty">Warmerly: ' + esc((w && w.error) || 'no data yet') + '</p>');
   }
 
   function renderChanges() {
