@@ -25,3 +25,9 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"
+
+[[headers]]
+  for = "/images/tmp-*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://drive.google.com"
+    X-Robots-Tag = "noindex"
