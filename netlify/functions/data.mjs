@@ -34,7 +34,7 @@ async function applyInbox() {
   } catch (e) { console.log('inbox error', e.message); }
 }
 
-const CF_ACCOUNT = '';              // filled in when known; env CF_ACCOUNT_ID also works
+const CF_ACCOUNT = 'b57aea6be2989a950e1e734a301e8a46'; // Cloudflare account id (not secret); env CF_ACCOUNT_ID also works
 const HOST = 'swiftprimedesign.com';
 
 export const STATUSES = [
@@ -200,7 +200,7 @@ export default async (req) => {
   const [leads, changelog, settings, health, warmerly, ig, c1, c2, cf, cl] = await Promise.all([
     readJSON('leads', []), readJSON('changelog', []), readJSON('settings', {}), readJSON('health', {}),
     readJSON('warmerly', null), readJSON('ig', {}), readJSON('clicks-' + prev, {}), readJSON('clicks-' + month, {}),
-    cached('cache-cf', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity)
+    cached('cache-cf2', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity)
   ]);
   const wmData = await cached('cache-warmerly', 3600e3, warmerlySync);
   const leadsNow = wmData && !wmData.error ? await readJSON('leads', leads) : leads;
