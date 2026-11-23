@@ -145,10 +145,11 @@ function setStatus(lead, status, extra = {}) {
   lead.history.push({ s: status, at: new Date().toISOString(), ...extra });
 }
 
+let pushResult = null;
 async function applyActions(actions, who) {
   const leads = await readJSON('leads', []);
   const byId = Object.fromEntries(leads.map((l) => [l.id, l]));
-  let changelog = null, settings = null, health = null, warmerly = null, ig = null;
+  let changelog = null, settings = null, health = null, warmerly = null, ig = null; pushResult = null;
   for (const a of actions) {
     const l = a.id ? byId[a.id] : null;
     switch (a.type) {
@@ -168,6 +169,19 @@ async function applyActions(actions, who) {
       case 'settings': settings = { ...(await readJSON('settings', {})), ...(a.settings || {}) }; break;
       case 'health': health = { ...(await readJSON('health', {})), ...(a.health || {}), updatedAt: new Date().toISOString() }; break;
       case 'warmerly': warmerly = { at: new Date().toISOString(), ...(a.data || {}) }; break;
+      case 'pushWarmerly': {                      // add approved leads to a Warmerly campaign (stays draft until you press Start)
+        const camp = Object.entries(CAMPAIGNS).find(([, n]) => n === a.campaign);
+        if (!camp) throw new Error('unknown campaign ' + a.campaign);
+        const todo = leads.filter((x) => x.status === 'approved' && x.email && !x.wmAdded && (x.campaign || '').startsWith(a.campaign.split(' –')[0]));
+        if (!todo.length) break;
+        const body = { leads: todo.map((x) => ({ email: x.email, firstName: x.firstName || '', lastName: '', companyName: x.company || '', customVars: { personal_line: x.personalLine || '' } })) };
+        const r = await fetch(WM + '/campaigns/' + camp[0] + '/leads', { method: 'POST', headers: { 'X-Api-Key': env('WARMERLY_API_KEY'), 'X-Project-Id': WM_PROJECT, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const txt = await r.text();
+        if (!r.ok) throw new Error('Warmerly ' + r.status + ' ' + txt.slice(0, 300));
+        todo.forEach((x) => { x.wmAdded = new Date().toISOString(); });
+        pushResult = { added: todo.length, response: txt.slice(0, 500) };
+        break;
+      }
       case 'ig': ig = ig || await readJSON('ig', {}); ig[today()] = { ...(ig[today()] || {}), ...(a.counts || {}) }; break;
     }
   }
@@ -190,7 +204,7 @@ export default async (req) => {
     try { body = await req.json(); } catch {}
     try {
       const n = await applyActions(Array.isArray(body.actions) ? body.actions : [], task ? 'task' : 'you');
-      return json({ ok: true, leads: n });
+      return json({ ok: true, leads: n, push: pushResult });
     } catch (e) { return json({ error: String(e.message || e) }, 400); }
   }
 
