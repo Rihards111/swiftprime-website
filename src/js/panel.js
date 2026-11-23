@@ -173,7 +173,7 @@
     var f = D.leads.filter(function (l) { return l.status === 'found'; }).sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
     $('#approve-list').innerHTML = f.length ? f.map(function (l) {
       return '<div class="item"><span class="score s' + esc(l.score) + '">Score ' + esc(l.score || '?') + '</span><div class="grow"><div class="t">' + esc(l.company) + ' <span class="s">· ' + esc([l.niche, l.country, l.campaign].filter(Boolean).join(' · ')) + '</span></div>' +
-        '<div class="s">' + esc(l.scoreReasons || '') + (l.website ? ' · <a href="' + esc(l.website) + '" target="_blank" rel="noopener">site ↗</a>' : '') + (l.instagram ? ' · <a href="https://instagram.com/' + esc(String(l.instagram).replace('@', '')) + '" target="_blank" rel="noopener">IG ↗</a>' : '') + '</div>' +
+        '<div class="s">' + esc(l.scoreReasons || '') + (l.website ? ' · <a href="' + esc(l.website) + '" target="_blank" rel="noopener">site ↗</a>' : '') + (l.shop ? ' · <a href="' + esc(l.shop) + '" target="_blank" rel="noopener">products ↗</a>' : '') + (l.instagram ? ' · <a href="https://instagram.com/' + esc(String(l.instagram).replace('@', '')) + '" target="_blank" rel="noopener">IG ↗</a>' : '') + '</div>' +
         '<textarea data-line="' + esc(l.id) + '" aria-label="Personal line for ' + esc(l.company) + '">' + esc(l.personalLine || '') + '</textarea></div>' +
         '<div class="row" style="flex-direction:column"><button type="button" class="btn light small" data-approve="' + esc(l.id) + '">Approve</button><button type="button" class="btn small" data-reject="' + esc(l.id) + '">Reject</button></div></div>';
     }).join('') : '<p class="empty">No new leads waiting. The daily task adds them here with a score and a personal line.</p>';
