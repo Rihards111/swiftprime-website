@@ -14,7 +14,7 @@
     interested: 'Interested', brief_sent: 'Brief sent', qualified: 'Brief in (qualified)', concept_sent: 'Concept sent',
     revision: 'In revision', won: 'Won – paid', delivered: 'Delivered',
     lost_no: 'Lost – no', lost_silent: 'Lost – silent', lost_brief: 'Lost at brief', lost_ghost: 'Ghosted after concept',
-    lost_price: 'Lost – price', lost_concept: 'Lost – concept', bad_lead: 'Bad lead / bounced', recontact: 'Re-contact later', rejected: 'Rejected by you'
+    lost_price: 'Lost – price', lost_concept: 'Lost – concept', bad_lead: 'Bad lead / bounced', recontact: 'Re-contact later', rejected: 'Rejected by you', dnc: 'Do not contact'
   };
   var REASONS = [
     ['designer', 'Have a designer or agency', 'Targeting'], ['redesigned', 'Just redesigned', 'Targeting / timing'],
@@ -25,7 +25,7 @@
   ];
   var RANK = { found: 0, approved: 0, rejected: -1, contacted: 1, followup1: 1, followup2: 1, lost_silent: 1, bad_lead: 1, recontact: 1,
     lost_no: 2, replied: 2, interested: 3, brief_sent: 3, lost_brief: 3, qualified: 4, concept_sent: 5, revision: 5, lost_ghost: 5,
-    lost_price: 5, lost_concept: 5, won: 6, delivered: 6 };
+    lost_price: 5, lost_concept: 5, won: 6, delivered: 6, dnc: 1 };
 
   // funnel steps: [key, label, test(maxRank, lead), target % of previous, fix guide]
   var STEPS = [
@@ -82,7 +82,7 @@
     var now = new Date();
     $('#today-date').textContent = 'swiftprimedesign.com/panel · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
     var h = now.getHours(); $('#daypart').textContent = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
-    renderFunnel(); renderToday(); renderApprove(); renderPipe(); renderWeb(); renderMoney(); renderHealth(); renderChanges();
+    renderFunnel(); renderToday(); renderApprove(); renderExport(); renderPipe(); renderRuns(); renderWeb(); renderMoney(); renderHealth(); renderChanges();
   }
 
   function funnelFor(leads) {
@@ -153,7 +153,7 @@
       if (l.status === 'replied') t.push([0, l, 'Replied – read it in Gmail and set Interested or Lost + reason', l.repliedAfter || '']);
       if (l.status === 'interested') t.push([0, l, 'Said yes – send the brief', 'Send the “after yes” message with the brief link']);
       if (l.status === 'lost_no' && !l.reason) t.push([1, l, 'Said no – send the numbered question', 'Then tag the reason']);
-      if (l.status === 'brief_sent' && (d = since(lastAt(l, 'brief_sent'))) >= 2) t.push([2, l, 'Brief reminder (' + d + ' days)', 'No brief yet']);
+      if (l.status === 'brief_sent' && (d = since(lastAt(l, 'brief_sent'))) >= 2) t.push([2, l, 'Brief reminder (' + d + ' days)', l.briefClicks ? 'Opened the brief ' + l.briefClicks + '× but no brief yet' : 'Brief link not opened yet']);
       if (l.status === 'qualified') t.push([1, l, 'Make the concepts', 'Brief in ' + since(lastAt(l, 'qualified')) + ' day(s) ago – 48h promise']);
       if (l.status === 'concept_sent') {
         d = since(lastAt(l, 'concept_sent'));
@@ -179,11 +179,11 @@
     }).join('') : '<p class="empty">No new leads waiting. The daily task adds them here with a score and a personal line.</p>';
   }
 
-  var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['replied', 'interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead'], ['recontact']];
+  var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['replied', 'interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'dnc'], ['recontact']];
   var COLN = ['Found / approved', 'Contacted', 'Interested', 'Brief in', 'Concept', 'Won', 'Lost', 'Re-contact later'];
   function renderPipe() {
     $('#pipe').innerHTML = COLS.map(function (c, i) {
-      var ls = D.leads.filter(function (l) { return c.indexOf(l.status) >= 0; });
+      var ls = D.leads.filter(function (l) { return c.indexOf(l.status) >= 0; }).sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
       return '<div class="col"><h3><span>' + COLN[i] + '</span><span>' + ls.length + '</span></h3>' + ls.slice(0, 12).map(function (l) {
         return '<button type="button" class="lead' + (i === 6 ? ' lost' : '') + '" data-open="' + esc(l.id) + '">' + esc(l.company || l.email) + '<small>' + esc(STATUS[l.status] || l.status) + (l.score ? ' · score ' + esc(l.score) : '') + '</small></button>';
       }).join('') + (ls.length > 12 ? '<p class="empty">+' + (ls.length - 12) + ' more</p>' : '') + '</div>';
@@ -245,6 +245,63 @@
     act([{ type: 'change', step: f.step.value, text: f.text.value }], 'Change logged').then(function () { f.text.value = ''; });
   });
 
+
+  // ---------- export to Warmerly ----------
+  function exportGroup(l) {
+    var c = String(l.campaign || 'Other').replace(/\s*\(not in Warmerly yet\)\s*/i, '').trim();
+    if (/^LV/i.test(c) && !l.firstName) return 'LV – bez vārda';
+    return c;
+  }
+  function renderExport() {
+    var g = {};
+    D.leads.filter(function (l) { return l.status === 'approved' && l.email; }).forEach(function (l) {
+      var k = exportGroup(l); g[k] = g[k] || { n: 0, all: 0 }; g[k].all++; if (!l.exportedAt) g[k].n++;
+    });
+    var keys = Object.keys(g).sort(function (a, b) { return g[b].n - g[a].n; });
+    $('#export-list').innerHTML = keys.length ? keys.map(function (k) {
+      var q = encodeURIComponent(k);
+      return '<div class="item"><div class="grow"><div class="t">' + esc(k) + '</div><div class="s">' + g[k].n + ' new approved · ' + g[k].all + ' approved in total · best score first</div></div>' +
+        (g[k].n ? '<a class="btn light small" href="/api/export?campaign=' + q + '" data-export>Download new (' + g[k].n + ')</a>' : '<span class="s muted">nothing new</span>') +
+        '<a class="btn small" href="/api/export?campaign=' + q + '&all=1" data-export>All again</a></div>';
+    }).join('') : '<p class="empty">No approved leads yet.</p>';
+  }
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-export]')) setTimeout(load, 2500); });
+
+  // ---------- lead runs ----------
+  function renderRuns() {
+    var r = D.runs || [];
+    $('#runs-list').innerHTML = r.length ? '<table><tr><th>When</th><th>New</th><th>By source</th><th>Dropped</th><th>Apify</th><th>Problems</th></tr>' + r.slice(0, 20).map(function (x) {
+      var src = x.sources ? Object.keys(x.sources).map(function (k) { return k + ' ' + x.sources[k]; }).join(', ') : '';
+      var dr = x.dropped != null ? x.dropped + (x.droppedReasons ? ' (' + Object.keys(x.droppedReasons).map(function (k) { return k + ' ' + x.droppedReasons[k]; }).join(', ') + ')' : '') : '';
+      return '<tr><td>' + esc(x.at.slice(0, 16).replace('T', ' ')) + (x.trigger ? ' · ' + esc(x.trigger) : '') + '</td><td>' + esc(x.added != null ? x.added : '') + '</td><td>' + esc(src) + '</td><td>' + esc(dr) + '</td><td>' + esc(x.apifyUsd != null ? '$' + x.apifyUsd : '') + '</td><td>' + esc((x.errors || []).join('; ')) + '</td></tr>';
+    }).join('') + '</table>' : '<p class="empty">No runs logged yet. Each nightly run (04:37) and each “Start lead search now” adds a line here.</p>';
+    var b = $('#start-run'); if (b) b.title = D.canStartRun ? 'Starts a lead search in the cloud (10–30 min)' : 'Not set up yet – needs ROUTINE_FIRE_URL and ROUTINE_TOKEN in Netlify';
+  }
+  $('#start-run').addEventListener('click', function () {
+    if (!confirm('Start a lead search now? It runs in the cloud and takes 10–30 minutes. New leads appear in “Leads to approve”.')) return;
+    fetch('/api/run', { method: 'POST', credentials: 'same-origin' }).then(function (r) { return r.json(); })
+      .then(function (j) { toast(j.ok ? 'Lead search started – check back in 10–30 min' : (j.error || 'Could not start')); });
+  });
+
+  // ---------- brief links ----------
+  var FORMS = [['labels-en', 'Labels EN'], ['labels-lv', 'Labels LV'], ['logo-en', 'Logo EN'], ['logo-lv', 'Logo LV']];
+  function briefBox(l) {
+    var links = (l.briefLinks || []).slice().reverse();
+    return '<div class="brief"><h3 style="font-size:13px;margin:12px 0 6px">Brief link (tracked)</h3>' +
+      '<div class="row wrap">' + FORMS.map(function (f) { return '<button type="button" class="btn small" data-mklink="' + esc(l.id) + '" data-form="' + f[0] + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+      (links.length ? links.map(function (x) { var u = location.origin + '/b/' + x.code; return '<div class="row" style="margin-top:6px"><input readonly value="' + esc(u) + '" style="flex:1"><button type="button" class="btn small light" data-copy="' + esc(u) + '">Copy</button></div>'; }).join('') : '<p class="s muted">Make a link, copy it into your reply. Clicks show here.</p>') +
+      '<p class="s">' + (l.briefClicks ? 'Opened ' + l.briefClicks + '× · last ' + esc(String(l.briefClickedAt || '').slice(0, 16).replace('T', ' ')) : 'Not opened yet') + '</p></div>';
+  }
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('[data-copy]');
+    if (c) { navigator.clipboard.writeText(c.dataset.copy).then(function () { toast('Link copied'); }); return; }
+    var m = e.target.closest('[data-mklink]');
+    if (m) {
+      var id = m.dataset.mklink;
+      api('POST', { actions: [{ type: 'briefLink', id: id, form: m.dataset.form }] }).then(function () { return load(); }).then(function () { $('#lead-dialog').close(); openLead(id); toast('Brief link made'); });
+    }
+  });
+
   // ---------- lead dialog ----------
   function openLead(id) {
     var l = D.leads.find(function (x) { return x.id === id; }); if (!l) return;
@@ -256,7 +313,7 @@
       '<div class="row"><label style="flex:1">Lead score<select name="score">' + ['', 1, 2, 3].map(function (s) { return '<option' + (String(s) === String(l.score || '') ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label>' +
       '<label style="flex:1">Value €<input name="value" inputmode="numeric" value="' + esc(l.value || '') + '"></label></div>' +
       '<label>Notes<textarea name="notes">' + esc(l.notes || '') + '</textarea></label>' +
-      '<div class="hist">' + (l.history || []).slice().reverse().map(function (h) { return esc(h.at.slice(0, 16).replace('T', ' ')) + ' · ' + esc(STATUS[h.s] || h.s) + (h.by ? ' (' + esc(h.by) + ')' : ''); }).join('<br>') + '</div>' +
+      briefBox(l) + '<div class="hist">' + (l.history || []).slice().reverse().map(function (h) { return esc(h.at.slice(0, 16).replace('T', ' ')) + ' · ' + esc(STATUS[h.s] || h.s) + (h.note ? ' – ' + esc(h.note) : '') + (h.by ? ' (' + esc(h.by) + ')' : ''); }).join('<br>') + '</div>' +
       '<div class="row"><button class="btn primary" value="save">Save</button><button class="btn" value="cancel">Close</button></div></form>';
     dlg.showModal();
     dlg.querySelector('#lead-form').addEventListener('submit', function (e) {

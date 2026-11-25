@@ -40,7 +40,7 @@ const HOST = 'swiftprimedesign.com';
 export const STATUSES = [
   'found', 'approved', 'contacted', 'followup1', 'followup2', 'replied', 'interested', 'brief_sent', 'qualified',
   'concept_sent', 'revision', 'won', 'delivered',
-  'lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'recontact', 'rejected'
+  'lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'recontact', 'rejected', 'dnc'
 ];
 
 async function cached(key, maxAgeMs, fn) {
@@ -149,7 +149,7 @@ let pushResult = null;
 async function applyActions(actions, who) {
   const leads = await readJSON('leads', []);
   const byId = Object.fromEntries(leads.map((l) => [l.id, l]));
-  let changelog = null, settings = null, health = null, warmerly = null, ig = null; pushResult = null;
+  let changelog = null, settings = null, health = null, warmerly = null, ig = null, runs = null, links = null; pushResult = null;
   for (const a of actions) {
     const l = a.id ? byId[a.id] : null;
     switch (a.type) {
@@ -182,6 +182,22 @@ async function applyActions(actions, who) {
         pushResult = { added: todo.length, response: txt.slice(0, 500) };
         break;
       }
+      case 'run': {                               // lead-search run log (nightly task or Start-now)
+        runs = runs || await readJSON('runs', []);
+        runs.unshift({ id: uid(), at: new Date().toISOString(), ...(a.run || {}) });
+        runs = runs.slice(0, 90);
+        break;
+      }
+      case 'briefLink': {                         // make a personal, tracked brief link for a lead
+        if (!l) break;
+        links = links || await readJSON('brief-links', {});
+        const code = crypto.randomBytes(4).toString('base64url').replace(/[-_]/g, 'x').slice(0, 6);
+        links[code] = { id: l.id, form: String(a.form || 'labels-en'), at: new Date().toISOString() };
+        l.briefLinks = l.briefLinks || [];
+        l.briefLinks.push({ code, form: links[code].form, at: links[code].at });
+        pushResult = { code };
+        break;
+      }
       case 'ig': ig = ig || await readJSON('ig', {}); ig[today()] = { ...(ig[today()] || {}), ...(a.counts || {}) }; break;
     }
   }
@@ -191,6 +207,8 @@ async function applyActions(actions, who) {
   if (health) await writeJSON('health', health);
   if (warmerly) await writeJSON('warmerly', warmerly);
   if (ig) await writeJSON('ig', ig);
+  if (runs) await writeJSON('runs', runs);
+  if (links) await writeJSON('brief-links', links);
   return leads.length;
 }
 
@@ -211,14 +229,14 @@ export default async (req) => {
   await applyInbox();
   const month = today().slice(0, 7);
   const prev = new Date(Date.now() - 31 * 864e5).toISOString().slice(0, 7);
-  const [leads, changelog, settings, health, warmerly, ig, c1, c2, cf, cl] = await Promise.all([
+  const [leads, changelog, settings, health, warmerly, ig, c1, c2, cf, cl, runs] = await Promise.all([
     readJSON('leads', []), readJSON('changelog', []), readJSON('settings', {}), readJSON('health', {}),
     readJSON('warmerly', null), readJSON('ig', {}), readJSON('clicks-' + prev, {}), readJSON('clicks-' + month, {}),
-    cached('cache-cf2', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity)
+    cached('cache-cf2', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity), readJSON('runs', [])
   ]);
   const wmData = await cached('cache-warmerly', 3600e3, warmerlySync);
   const leadsNow = wmData && !wmData.error ? await readJSON('leads', leads) : leads;
-  return json({ now: new Date().toISOString(), leads: leadsNow, changelog, settings, health, warmerly: wmData || warmerly, ig, clicks: { ...c1, ...c2 }, cloudflare: cf, clarity: cl, statuses: STATUSES });
+  return json({ now: new Date().toISOString(), leads: leadsNow, changelog, settings, health, warmerly: wmData || warmerly, ig, clicks: { ...c1, ...c2 }, cloudflare: cf, clarity: cl, statuses: STATUSES, runs, canStartRun: !!(env('ROUTINE_FIRE_URL') && env('ROUTINE_TOKEN')) });
 };
 
 export const config = { path: '/api/data' };

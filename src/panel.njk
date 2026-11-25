@@ -28,10 +28,12 @@ permalink: /panel/index.html
     <a href="#funnel">Funnel</a>
     <a href="#today">Today</a>
     <a href="#approve">Leads to approve</a>
+    <a href="#export">Export to Warmerly</a>
     <a href="#pipeline">Pipeline</a>
     <a href="#website">Website</a>
     <a href="#money">Money</a>
     <a href="#system">System health</a>
+    <a href="#runs">Lead runs</a>
     <a href="#changes">Change log</a>
     <button type="button" class="btn ghost small" id="logout">Log out</button>
   </nav>
@@ -43,6 +45,7 @@ permalink: /panel/index.html
         <h1>Good <span id="daypart">day</span>, Rihards</h1>
       </div>
       <div class="row">
+        <button type="button" class="btn ghost" id="start-run">Start lead search now</button>
         <button type="button" class="btn ghost" id="refresh">Refresh</button>
         <button type="button" class="btn ghost" id="add-lead">+ Add lead</button>
       </div>
@@ -64,6 +67,11 @@ permalink: /panel/index.html
       <div id="approve-list" class="list"></div>
     </section>
 
+    <section id="export" class="card">
+      <div class="head"><h2>Export to Warmerly</h2><span class="mono muted">Approved leads → CSV → Warmerly campaign → Audience → Import leads</span></div>
+      <div id="export-list" class="list"></div>
+    </section>
+
     <section id="pipeline" class="card">
       <div class="head"><h2>Pipeline</h2><span class="mono muted">Click a lead to change it</span></div>
       <div id="pipe" class="pipe"></div>
@@ -79,6 +87,11 @@ permalink: /panel/index.html
         <div id="money-box"></div>
       </section>
     </div>
+
+    <section id="runs" class="card">
+      <div class="head"><h2>Lead runs</h2><span class="mono muted">What each lead search did</span></div>
+      <div id="runs-list"></div>
+    </section>
 
     <div class="grid2">
       <section id="system" class="card">
