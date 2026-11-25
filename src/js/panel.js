@@ -275,9 +275,11 @@
       var dr = x.dropped != null ? x.dropped + (x.droppedReasons ? ' (' + Object.keys(x.droppedReasons).map(function (k) { return k + ' ' + x.droppedReasons[k]; }).join(', ') + ')' : '') : '';
       return '<tr><td>' + esc(x.at.slice(0, 16).replace('T', ' ')) + (x.trigger ? ' · ' + esc(x.trigger) : '') + '</td><td>' + esc(x.added != null ? x.added : '') + '</td><td>' + esc(src) + '</td><td>' + esc(dr) + '</td><td>' + esc(x.apifyUsd != null ? '$' + x.apifyUsd : '') + '</td><td>' + esc((x.errors || []).join('; ')) + '</td></tr>';
     }).join('') + '</table>' : '<p class="empty">No runs logged yet. Each nightly run (04:37) and each “Start lead search now” adds a line here.</p>';
-    var b = $('#start-run'); if (b) b.title = D.canStartRun ? 'Starts a lead search in the cloud (10–30 min)' : 'Not set up yet – needs ROUTINE_FIRE_URL and ROUTINE_TOKEN in Netlify';
+    var b = $('#start-run'); if (b) b.title = D.canStartRun ? 'Starts a lead search in the cloud (10–30 min)' : 'Opens the lead search in Claude – click Run now there';
   }
+  var RUN_PAGE = 'https://claude.ai/scheduled-task/trig_018koRbeRqAwB8RWuD2jXqKG';
   $('#start-run').addEventListener('click', function () {
+    if (!D.canStartRun) { window.open(RUN_PAGE, '_blank'); toast('Click “Run now” on the page that opened'); return; }
     if (!confirm('Start a lead search now? It runs in the cloud and takes 10–30 minutes. New leads appear in “Leads to approve”.')) return;
     fetch('/api/run', { method: 'POST', credentials: 'same-origin' }).then(function (r) { return r.json(); })
       .then(function (j) { toast(j.ok ? 'Lead search started – check back in 10–30 min' : (j.error || 'Could not start')); });
