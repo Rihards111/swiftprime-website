@@ -229,14 +229,14 @@ export default async (req) => {
   await applyInbox();
   const month = today().slice(0, 7);
   const prev = new Date(Date.now() - 31 * 864e5).toISOString().slice(0, 7);
-  const [leads, changelog, settings, health, warmerly, ig, c1, c2, cf, cl, runs] = await Promise.all([
+  const [leads, changelog, settings, health, warmerly, ig, c1, c2, cf, cl, runs, briefsUnmatched] = await Promise.all([
     readJSON('leads', []), readJSON('changelog', []), readJSON('settings', {}), readJSON('health', {}),
     readJSON('warmerly', null), readJSON('ig', {}), readJSON('clicks-' + prev, {}), readJSON('clicks-' + month, {}),
-    cached('cache-cf2', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity), readJSON('runs', [])
+    cached('cache-cf2', 3 * 3600e3, cloudflare), cached('cache-clarity', 3 * 3600e3, clarity), readJSON('runs', []), readJSON('briefs-unmatched', [])
   ]);
   const wmData = await cached('cache-warmerly', 3600e3, warmerlySync);
   const leadsNow = wmData && !wmData.error ? await readJSON('leads', leads) : leads;
-  return json({ now: new Date().toISOString(), leads: leadsNow, changelog, settings, health, warmerly: wmData || warmerly, ig, clicks: { ...c1, ...c2 }, cloudflare: cf, clarity: cl, statuses: STATUSES, runs, canStartRun: !!(env('ROUTINE_FIRE_URL') && env('ROUTINE_TOKEN')) });
+  return json({ now: new Date().toISOString(), leads: leadsNow, changelog, settings, health, warmerly: wmData || warmerly, ig, clicks: { ...c1, ...c2 }, cloudflare: cf, clarity: cl, statuses: STATUSES, runs, briefsUnmatched, canStartRun: !!(env('ROUTINE_FIRE_URL') && env('ROUTINE_TOKEN')) });
 };
 
 export const config = { path: '/api/data' };

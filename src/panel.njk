@@ -29,6 +29,7 @@ permalink: /panel/index.html
     <a href="#today">Today</a>
     <a href="#approve">Leads to approve</a>
     <a href="#export">Export to Warmerly</a>
+    <a href="#briefs">Briefs</a>
     <a href="#pipeline">Pipeline</a>
     <a href="#website">Website</a>
     <a href="#money">Money</a>
@@ -72,6 +73,11 @@ permalink: /panel/index.html
       <div id="export-list" class="list"></div>
     </section>
 
+    <section id="briefs" class="card">
+      <div class="head"><h2>Briefs</h2><span class="mono muted">Personal brief links: sent → opened → filled</span></div>
+      <div id="briefs-box"></div>
+    </section>
+
     <section id="pipeline" class="card">
       <div class="head"><h2>Pipeline</h2><span class="mono muted">Click a lead to change it</span></div>
       <div id="pipe" class="pipe"></div>
@@ -90,6 +96,7 @@ permalink: /panel/index.html
 
     <section id="runs" class="card">
       <div class="head"><h2>Lead runs</h2><span class="mono muted">What each lead search did</span></div>
+      <div class="row wrap" id="run-days" style="margin-bottom:10px"></div>
       <div id="runs-list"></div>
     </section>
 

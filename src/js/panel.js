@@ -82,7 +82,7 @@
     var now = new Date();
     $('#today-date').textContent = 'swiftprimedesign.com/panel · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
     var h = now.getHours(); $('#daypart').textContent = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
-    renderFunnel(); renderToday(); renderApprove(); renderExport(); renderPipe(); renderRuns(); renderWeb(); renderMoney(); renderHealth(); renderChanges();
+    renderFunnel(); renderToday(); renderApprove(); renderExport(); renderBriefs(); renderPipe(); renderRuns(); renderDays(); renderWeb(); renderMoney(); renderHealth(); renderChanges();
   }
 
   function funnelFor(leads) {
@@ -285,6 +285,39 @@
       .then(function (j) { toast(j.ok ? 'Lead search started – check back in 10–30 min' : (j.error || 'Could not start')); });
   });
 
+
+  // ---------- briefs funnel ----------
+  function renderBriefs() {
+    var sent = D.leads.filter(function (l) { return (l.briefLinks || []).length; });
+    var opened = sent.filter(function (l) { return l.briefClicks; });
+    var filled = D.leads.filter(function (l) { return l.briefFilledAt; });
+    var rows = sent.concat(filled.filter(function (l) { return sent.indexOf(l) < 0; })).sort(function (a, b) {
+      return String(b.briefFilledAt || b.briefClickedAt || '').localeCompare(String(a.briefFilledAt || a.briefClickedAt || ''));
+    });
+    var un = D.briefsUnmatched || [];
+    $('#briefs-box').innerHTML = '<div class="kpis"><div class="kpi"><b>' + sent.length + '</b><span>Links sent</span></div><div class="kpi"><b>' + opened.length + '</b><span>Opened</span></div><div class="kpi"><b>' + filled.length + '</b><span>Filled ✓</span></div></div>' +
+      (rows.length ? '<div class="list">' + rows.slice(0, 30).map(function (l) {
+        var st = l.briefFilledAt ? 'Filled ✓ ' + String(l.briefFilledAt).slice(0, 10) : l.briefClicks ? 'Opened ' + l.briefClicks + '× · not filled' : 'Not opened';
+        return '<div class="item" data-open="' + esc(l.id) + '"><div class="grow"><div class="t">' + esc(l.company || l.email) + '</div><div class="s">' + esc(st) + '</div></div></div>';
+      }).join('') + '</div>' : '<p class="empty">No brief links sent yet. Open a lead → Brief link → copy it into your reply.</p>') +
+      (un.length ? '<p class="s">Briefs from emails not in the panel: ' + un.slice(0, 10).map(function (x) { return esc(x.email) + ' (' + esc(String(x.at).slice(0, 10)) + ')'; }).join(', ') + '</p>' : '');
+  }
+
+  // ---------- run days ----------
+  var DAYN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  function renderDays() {
+    var on = (D.settings && D.settings.runDays) || [0, 1, 2, 3, 4, 5, 6];
+    $('#run-days').innerHTML = '<span class="s">Nightly search (04:37) on:</span>' + [1, 2, 3, 4, 5, 6, 0].map(function (d) {
+      return '<label class="s" style="margin-left:8px"><input type="checkbox" data-day="' + d + '"' + (on.indexOf(d) >= 0 ? ' checked' : '') + '> ' + DAYN[d] + '</label>';
+    }).join('') + '<button type="button" class="btn small light" id="save-days" style="margin-left:10px">Save days</button>';
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.id === 'save-days') {
+      var days = Array.prototype.map.call(document.querySelectorAll('[data-day]:checked'), function (x) { return Number(x.dataset.day); });
+      api('POST', { actions: [{ type: 'settings', settings: { runDays: days } }] }).then(load).then(function () { toast(days.length ? 'Run days saved' : 'Saved – nightly search is OFF'); });
+    }
+  });
+
   // ---------- brief links ----------
   var FORMS = [['labels-en', 'Labels EN'], ['labels-lv', 'Labels LV'], ['logo-en', 'Logo EN'], ['logo-lv', 'Logo LV']];
   function briefBox(l) {
@@ -292,7 +325,7 @@
     return '<div class="brief"><h3 style="font-size:13px;margin:12px 0 6px">Brief link (tracked)</h3>' +
       '<div class="row wrap">' + FORMS.map(function (f) { return '<button type="button" class="btn small" data-mklink="' + esc(l.id) + '" data-form="' + f[0] + '">' + f[1] + '</button>'; }).join('') + '</div>' +
       (links.length ? links.map(function (x) { var u = location.origin + '/b/' + x.code; return '<div class="row" style="margin-top:6px"><input readonly value="' + esc(u) + '" style="flex:1"><button type="button" class="btn small light" data-copy="' + esc(u) + '">Copy</button></div>'; }).join('') : '<p class="s muted">Make a link, copy it into your reply. Clicks show here.</p>') +
-      '<p class="s">' + (l.briefClicks ? 'Opened ' + l.briefClicks + '× · last ' + esc(String(l.briefClickedAt || '').slice(0, 16).replace('T', ' ')) : 'Not opened yet') + '</p></div>';
+      '<p class="s">' + (l.briefFilledAt ? '<b>Brief filled ✓ ' + esc(String(l.briefFilledAt).slice(0, 16).replace('T', ' ')) + '</b> · ' : '') + (l.briefClicks ? 'Opened ' + l.briefClicks + '× · last ' + esc(String(l.briefClickedAt || '').slice(0, 16).replace('T', ' ')) : 'Not opened yet') + '</p></div>';
   }
   document.addEventListener('click', function (e) {
     var c = e.target.closest('[data-copy]');

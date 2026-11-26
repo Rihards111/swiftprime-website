@@ -14,12 +14,12 @@ export default async (req) => {
   const links = await readJSON('brief-links', {});
   const link = links[code];
   if (!link) return Response.redirect('https://swiftprimedesign.com/', 302);
+  const leads = await readJSON('leads', []);
+  const l = leads.find((x) => x.id === link.id);
   // Skip link-preview bots (Gmail/Outlook/Slack fetch links before a person clicks).
   const ua = (req.headers.get('user-agent') || '').toLowerCase();
   const bot = /bot|preview|crawler|spider|facebookexternalhit|slack|whatsapp|googleimageproxy|outlook|safelinks/.test(ua);
   if (!bot) {
-    const leads = await readJSON('leads', []);
-    const l = leads.find((x) => x.id === link.id);
     if (l) {
       l.briefClicks = (l.briefClicks || 0) + 1;
       l.briefClickedAt = new Date().toISOString();
@@ -28,7 +28,11 @@ export default async (req) => {
       await writeJSON('leads', leads);
     }
   }
-  return Response.redirect(FORMS[link.form] || FORMS['labels-en'], 302);
+  let url = FORMS[link.form] || FORMS['labels-en'];
+  // Put the lead's real email in the form's email field (or leave it empty), never the word "Email".
+  url = url.replace(/(entry\.\d+=)(Email|E-pasts)$/, (m, k) => (l && l.email ? k + encodeURIComponent(l.email) : '').replace(/&$/, ''));
+  if (!(l && l.email)) url = url.replace(/&entry\.\d+=$/, '');
+  return Response.redirect(url, 302);
 };
 
 export const config = { path: '/b/:code' };
