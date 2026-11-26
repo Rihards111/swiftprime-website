@@ -181,8 +181,13 @@
 
   var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['replied', 'interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'dnc'], ['recontact'], ['on_hold']];
   var COLN = ['Found / approved', 'Contacted', 'Interested', 'Brief in', 'Concept', 'Won', 'Lost', 'Re-contact later', 'On hold – risky'];
+  var showArchive = false;
+  document.addEventListener('click', function (e) { if (e.target.id === 'toggle-archive') { showArchive = !showArchive; e.target.textContent = showArchive ? 'Hide Lost + Re-contact' : 'Show Lost + Re-contact'; renderPipe(); } });
   function renderPipe() {
+    var ARCH = [6, 7];
+    $('#pipe').style.gridTemplateColumns = 'repeat(' + (showArchive ? 9 : 7) + ',minmax(150px,1fr))';
     $('#pipe').innerHTML = COLS.map(function (c, i) {
+      if (!showArchive && ARCH.indexOf(i) >= 0) return '';
       var ls = D.leads.filter(function (l) { return c.indexOf(l.status) >= 0; }).sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
       return '<div class="col"><h3><span>' + COLN[i] + '</span><span>' + ls.length + '</span></h3>' + ls.slice(0, 12).map(function (l) {
         return '<button type="button" class="lead' + (i === 6 ? ' lost' : '') + '" data-open="' + esc(l.id) + '">' + esc(l.company || l.email) + '<small>' + esc(STATUS[l.status] || l.status) + (l.score ? ' · score ' + esc(l.score) : '') + '</small></button>';
