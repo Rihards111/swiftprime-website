@@ -198,6 +198,7 @@ async function applyActions(actions, who) {
         links[code] = { id: l.id, kind: 'concept', url, at: new Date().toISOString() };
         l.conceptLinks = l.conceptLinks || [];
         l.conceptLinks.push({ code, url, at: links[code].at });
+        if (['qualified', 'brief_sent', 'interested', 'replied'].includes(l.status)) setStatus(l, 'concept_sent', { by: who, note: 'concept link made' });
         pushResult = { code }; break;
       }
       case 'briefLink': {                         // make a personal, tracked brief link for a lead
@@ -207,6 +208,7 @@ async function applyActions(actions, who) {
         links[code] = { id: l.id, form: String(a.form || 'labels-en'), at: new Date().toISOString() };
         l.briefLinks = l.briefLinks || [];
         l.briefLinks.push({ code, form: links[code].form, at: links[code].at });
+        if (['interested', 'replied', 'contacted', 'followup1', 'followup2', 'lost_silent'].includes(l.status)) setStatus(l, 'brief_sent', { by: who, note: 'brief link made' });
         pushResult = { code };
         break;
       }

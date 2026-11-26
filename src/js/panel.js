@@ -23,9 +23,9 @@
     ['trust', 'Not sure who you are / spam', 'Trust'], ['closing', 'Business closing / not selling', 'Bad lead'],
     ['design', 'Concept / style not right', 'Concept'], ['other', 'Other / no reason', '—']
   ];
-  var RANK = { found: 0, approved: 0, rejected: -1, contacted: 1, followup1: 1, followup2: 1, lost_silent: 1, bad_lead: 1, recontact: 1,
+  var RANK = { found: 0, approved: 0, rejected: -1, contacted: 1, followup1: 1, followup2: 1, lost_silent: 1, bad_lead: 0, recontact: 2,
     lost_no: 2, replied: 2, interested: 3, brief_sent: 3, lost_brief: 3, qualified: 4, concept_sent: 5, revision: 5, lost_ghost: 5,
-    lost_price: 5, lost_concept: 5, won: 6, delivered: 6, dnc: 1, on_hold: 1 };
+    lost_price: 5, lost_concept: 5, won: 6, delivered: 6, dnc: 0, on_hold: 0 };
 
   // funnel steps: [key, label, test(maxRank, lead), target % of previous, fix guide]
   var STEPS = [
@@ -40,6 +40,8 @@
   function maxRank(l) {
     var m = RANK[l.status] != null ? RANK[l.status] : 0;
     (l.history || []).forEach(function (h) { if (RANK[h.s] > m) m = RANK[h.s]; });
+    // bounced or unsubscribed after being emailed: they were contacted, an unsubscribe is also a reply
+    if (m >= 1 && l.status === 'dnc') m = Math.max(m, 2);
     return m;
   }
   function reached(l, k) {
