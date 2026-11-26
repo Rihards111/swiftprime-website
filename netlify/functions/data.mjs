@@ -189,6 +189,17 @@ async function applyActions(actions, who) {
         runs = runs.slice(0, 90);
         break;
       }
+      case 'conceptLink': {                       // tracked link to the concept page (any https URL)
+        if (!l) break;
+        const url = String(a.url || '').trim();
+        if (!/^https:\/\/[^\s]{4,500}$/.test(url)) { pushResult = { error: 'Link must start with https://' }; break; }
+        links = links || await readJSON('brief-links', {});
+        const code = crypto.randomBytes(4).toString('base64url').replace(/[-_]/g, 'x').slice(0, 6);
+        links[code] = { id: l.id, kind: 'concept', url, at: new Date().toISOString() };
+        l.conceptLinks = l.conceptLinks || [];
+        l.conceptLinks.push({ code, url, at: links[code].at });
+        pushResult = { code }; break;
+      }
       case 'briefLink': {                         // make a personal, tracked brief link for a lead
         if (!l) break;
         links = links || await readJSON('brief-links', {});

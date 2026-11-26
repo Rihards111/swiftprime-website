@@ -158,7 +158,7 @@
       if (l.status === 'concept_sent') {
         d = since(lastAt(l, 'concept_sent'));
         var f = d >= 10 ? 'Day 10: “close your file?”' : d >= 5 ? 'Day 5 follow-up (change anything?)' : d >= 2 ? 'Day 2 follow-up' : null;
-        if (f) t.push([2, l, f, 'Concept sent ' + d + ' days ago']);
+        if (f) t.push([2, l, f, 'Concept sent ' + d + ' days ago · ' + (l.conceptClicks ? 'opened ' + l.conceptClicks + '× (last ' + String(l.conceptClickedAt).slice(5, 10) + '), no reply' : ((l.conceptLinks || []).length ? 'concept link NOT opened' : 'no tracked concept link')) ]);
       }
       if (l.igTodo) t.push([3, l, 'Instagram: ' + l.igTodo, l.igText || '']);
     });
@@ -332,7 +332,21 @@
       (links.length ? links.map(function (x) { var u = location.origin + '/b/' + x.code; return '<div class="row" style="margin-top:6px"><input readonly value="' + esc(u) + '" style="flex:1"><button type="button" class="btn small light" data-copy="' + esc(u) + '">Copy</button></div>'; }).join('') : '<p class="s muted">Make a link, copy it into your reply. Clicks show here.</p>') +
       '<p class="s">' + (l.briefFilledAt ? '<b>Brief filled ✓ ' + esc(String(l.briefFilledAt).slice(0, 16).replace('T', ' ')) + '</b> · ' : '') + (l.briefClicks ? 'Opened ' + l.briefClicks + '× · last ' + esc(String(l.briefClickedAt || '').slice(0, 16).replace('T', ' ')) : 'Not opened yet') + '</p></div>';
   }
+  function conceptBox(l) {
+    var links = (l.conceptLinks || []).slice().reverse();
+    return '<div class="brief"><h3 style="font-size:13px;margin:12px 0 6px">Concept link (tracked)</h3>' +
+      '<div class="row"><input id="concept-url" placeholder="Paste your concept link (https://…)" style="flex:1"><button type="button" class="btn small" data-mkconcept="' + esc(l.id) + '">Make link</button></div>' +
+      links.map(function (x) { var u = location.origin + '/b/' + x.code; return '<div class="row" style="margin-top:6px"><input readonly value="' + esc(u) + '" style="flex:1"><button type="button" class="btn small light" data-copy="' + esc(u) + '">Copy</button></div>'; }).join('') +
+      '<p class="s">' + (l.conceptClicks ? 'Concept opened ' + l.conceptClicks + '× · last ' + esc(String(l.conceptClickedAt || '').slice(0, 16).replace('T', ' ')) : (links.length ? 'Concept not opened yet' : 'Paste the concept page / Drive / Canva link, then copy the short link into your email.')) + '</p></div>';
+  }
   document.addEventListener('click', function (e) {
+    var k = e.target.closest('[data-mkconcept]');
+    if (k) {
+      var cid = k.dataset.mkconcept, url = ($('#concept-url').value || '').trim();
+      if (!/^https:\/\//.test(url)) { toast('Paste a link that starts with https://'); return; }
+      api('POST', { actions: [{ type: 'conceptLink', id: cid, url: url }] }).then(function () { return load(); }).then(function () { $('#lead-dialog').close(); openLead(cid); toast('Concept link made'); });
+      return;
+    }
     var c = e.target.closest('[data-copy]');
     if (c) { navigator.clipboard.writeText(c.dataset.copy).then(function () { toast('Link copied'); }); return; }
     var m = e.target.closest('[data-mklink]');
@@ -353,7 +367,7 @@
       '<div class="row"><label style="flex:1">Lead score<select name="score">' + ['', 1, 2, 3].map(function (s) { return '<option' + (String(s) === String(l.score || '') ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label>' +
       '<label style="flex:1">Value €<input name="value" inputmode="numeric" value="' + esc(l.value || '') + '"></label></div>' +
       '<label>Notes<textarea name="notes">' + esc(l.notes || '') + '</textarea></label>' +
-      briefBox(l) + '<div class="hist">' + (l.history || []).slice().reverse().map(function (h) { return esc(h.at.slice(0, 16).replace('T', ' ')) + ' · ' + esc(STATUS[h.s] || h.s) + (h.note ? ' – ' + esc(h.note) : '') + (h.by ? ' (' + esc(h.by) + ')' : ''); }).join('<br>') + '</div>' +
+      briefBox(l) + conceptBox(l) + '<div class="hist">' + (l.history || []).slice().reverse().map(function (h) { return esc(h.at.slice(0, 16).replace('T', ' ')) + ' · ' + esc(STATUS[h.s] || h.s) + (h.note ? ' – ' + esc(h.note) : '') + (h.by ? ' (' + esc(h.by) + ')' : ''); }).join('<br>') + '</div>' +
       '<div class="row"><button class="btn primary" value="save">Save</button><button class="btn" value="cancel">Close</button></div></form>';
     dlg.showModal();
     dlg.querySelector('#lead-form').addEventListener('submit', function (e) {

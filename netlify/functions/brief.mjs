@@ -20,7 +20,13 @@ export default async (req) => {
   const ua = (req.headers.get('user-agent') || '').toLowerCase();
   const bot = /bot|preview|crawler|spider|facebookexternalhit|slack|whatsapp|googleimageproxy|outlook|safelinks/.test(ua);
   if (!bot) {
-    if (l) {
+    if (l && link.kind === 'concept') {
+      l.conceptClicks = (l.conceptClicks || 0) + 1;
+      l.conceptClickedAt = new Date().toISOString();
+      l.history = l.history || [];
+      if (l.conceptClicks === 1) l.history.push({ s: l.status, at: l.conceptClickedAt, note: 'opened the concept link', by: 'concept link' });
+      await writeJSON('leads', leads);
+    } else if (l) {
       l.briefClicks = (l.briefClicks || 0) + 1;
       l.briefClickedAt = new Date().toISOString();
       l.history = l.history || [];
@@ -28,6 +34,7 @@ export default async (req) => {
       await writeJSON('leads', leads);
     }
   }
+  if (link.kind === 'concept') return Response.redirect(link.url, 302);
   let url = FORMS[link.form] || FORMS['labels-en'];
   // Put the lead's real email in the form's email field (or leave it empty), never the word "Email".
   url = url.replace(/(entry\.\d+=)(Email|E-pasts)$/, (m, k) => (l && l.email ? k + encodeURIComponent(l.email) : '').replace(/&$/, ''));
