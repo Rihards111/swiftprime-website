@@ -40,7 +40,7 @@ const HOST = 'swiftprimedesign.com';
 export const STATUSES = [
   'found', 'approved', 'contacted', 'followup1', 'followup2', 'replied', 'interested', 'brief_sent', 'qualified',
   'concept_sent', 'revision', 'won', 'delivered',
-  'lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'recontact', 'rejected', 'dnc'
+  'lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'recontact', 'rejected', 'dnc', 'on_hold'
 ];
 
 async function cached(key, maxAgeMs, fn) {
@@ -164,6 +164,7 @@ async function applyActions(actions, who) {
       }
       case 'status': if (l) setStatus(l, a.status, { by: who, note: a.note }); if (l && a.reason) l.reason = a.reason; if (l && a.value != null) l.value = Number(a.value); break;
       case 'field': if (l) l[a.field] = a.value; break;
+      case 'clearUnmatchedBriefs': await writeJSON('briefs-unmatched', []); break;
       case 'delete': if (l) { leads.splice(leads.indexOf(l), 1); delete byId[a.id]; } break;
       case 'change': changelog = changelog || await readJSON('changelog', []); changelog.unshift({ id: uid(), at: new Date().toISOString(), step: a.step || '', text: String(a.text || '').slice(0, 500) }); break;
       case 'settings': settings = { ...(await readJSON('settings', {})), ...(a.settings || {}) }; break;

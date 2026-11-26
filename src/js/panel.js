@@ -14,7 +14,7 @@
     interested: 'Interested', brief_sent: 'Brief sent', qualified: 'Brief in (qualified)', concept_sent: 'Concept sent',
     revision: 'In revision', won: 'Won – paid', delivered: 'Delivered',
     lost_no: 'Lost – no', lost_silent: 'Lost – silent', lost_brief: 'Lost at brief', lost_ghost: 'Ghosted after concept',
-    lost_price: 'Lost – price', lost_concept: 'Lost – concept', bad_lead: 'Bad lead / bounced', recontact: 'Re-contact later', rejected: 'Rejected by you', dnc: 'Do not contact'
+    lost_price: 'Lost – price', lost_concept: 'Lost – concept', bad_lead: 'Bad lead / bounced', recontact: 'Re-contact later', rejected: 'Rejected by you', dnc: 'Do not contact', on_hold: 'On hold – risky email'
   };
   var REASONS = [
     ['designer', 'Have a designer or agency', 'Targeting'], ['redesigned', 'Just redesigned', 'Targeting / timing'],
@@ -25,7 +25,7 @@
   ];
   var RANK = { found: 0, approved: 0, rejected: -1, contacted: 1, followup1: 1, followup2: 1, lost_silent: 1, bad_lead: 1, recontact: 1,
     lost_no: 2, replied: 2, interested: 3, brief_sent: 3, lost_brief: 3, qualified: 4, concept_sent: 5, revision: 5, lost_ghost: 5,
-    lost_price: 5, lost_concept: 5, won: 6, delivered: 6, dnc: 1 };
+    lost_price: 5, lost_concept: 5, won: 6, delivered: 6, dnc: 1, on_hold: 1 };
 
   // funnel steps: [key, label, test(maxRank, lead), target % of previous, fix guide]
   var STEPS = [
@@ -173,14 +173,14 @@
     var f = D.leads.filter(function (l) { return l.status === 'found'; }).sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
     $('#approve-list').innerHTML = f.length ? f.map(function (l) {
       return '<div class="item"><span class="score s' + esc(l.score) + '">Score ' + esc(l.score || '?') + '</span><div class="grow"><div class="t">' + esc(l.company) + ' <span class="s">· ' + esc([l.niche, l.country, l.campaign].filter(Boolean).join(' · ')) + '</span></div>' +
-        '<div class="s">' + esc(l.scoreReasons || '') + (l.website ? ' · <a href="' + esc(l.website) + '" target="_blank" rel="noopener">site ↗</a>' : '') + (l.shop ? ' · <a href="' + esc(l.shop) + '" target="_blank" rel="noopener">products ↗</a>' : '') + (l.instagram ? ' · <a href="https://instagram.com/' + esc(String(l.instagram).replace('@', '')) + '" target="_blank" rel="noopener">IG ↗</a>' : '') + '</div>' +
+        '<div class="s">' + (l.verify ? '<b>Email: ' + esc(l.verify) + '</b> · ' : '') + esc(l.scoreReasons || '') + (l.website ? ' · <a href="' + esc(l.website) + '" target="_blank" rel="noopener">site ↗</a>' : '') + (l.shop ? ' · <a href="' + esc(l.shop) + '" target="_blank" rel="noopener">products ↗</a>' : '') + (l.instagram ? ' · <a href="https://instagram.com/' + esc(String(l.instagram).replace('@', '')) + '" target="_blank" rel="noopener">IG ↗</a>' : '') + '</div>' +
         '<textarea data-line="' + esc(l.id) + '" aria-label="Personal line for ' + esc(l.company) + '">' + esc(l.personalLine || '') + '</textarea></div>' +
         '<div class="row" style="flex-direction:column"><button type="button" class="btn light small" data-approve="' + esc(l.id) + '">Approve</button><button type="button" class="btn small" data-reject="' + esc(l.id) + '">Reject</button></div></div>';
     }).join('') : '<p class="empty">No new leads waiting. The daily task adds them here with a score and a personal line.</p>';
   }
 
-  var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['replied', 'interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'dnc'], ['recontact']];
-  var COLN = ['Found / approved', 'Contacted', 'Interested', 'Brief in', 'Concept', 'Won', 'Lost', 'Re-contact later'];
+  var COLS = [['found', 'approved'], ['contacted', 'followup1', 'followup2'], ['replied', 'interested', 'brief_sent'], ['qualified'], ['concept_sent', 'revision'], ['won', 'delivered'], ['lost_no', 'lost_silent', 'lost_brief', 'lost_ghost', 'lost_price', 'lost_concept', 'bad_lead', 'dnc'], ['recontact'], ['on_hold']];
+  var COLN = ['Found / approved', 'Contacted', 'Interested', 'Brief in', 'Concept', 'Won', 'Lost', 'Re-contact later', 'On hold – risky'];
   function renderPipe() {
     $('#pipe').innerHTML = COLS.map(function (c, i) {
       var ls = D.leads.filter(function (l) { return c.indexOf(l.status) >= 0; }).sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
